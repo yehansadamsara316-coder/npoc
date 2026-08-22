@@ -1,0 +1,909 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ODER.POC</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet"
+        id="bootstrap-css" />
+        <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+        <link rel="icon" href="img/prince_online_canteen_youtube_logo.png">
+    <style>
+       /* =========================================================
+   PRINCE ONLINE CANTEEN — design tokens
+   Palette grounded in a Sri Lankan school canteen:
+   turmeric (fried rice, curry), banana-leaf green, chili red,
+   rice-cream background, charcoal ink.
+   ========================================================= */
+:root {
+  --turmeric: #e3a021;
+  --turmeric-dark: #b97c12;
+  --chili: #00ff15;
+  --leaf: #2f5233;
+  --leaf-dark: #203823;
+  --leaf-light: #6f8f6a;
+  --cream: #faf3e3;
+  --cream-2: #f2e6cb;
+  --ink: #26221b;
+  --paper: #fffdf8;
+
+  --font-display: "Baloo 2", "Trebuchet MS", sans-serif;
+  --font-body: "Inter", "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --radius: 18px;
+  --shadow-card: 0 8px 24px rgba(47, 82, 51, 0.14);
+  --shadow-soft: 0 2px 10px rgba(38, 34, 27, 0.08);
+  --container: 1180px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--cream);
+  color: var(--ink);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; display: block; }
+
+a { color: inherit; text-decoration: none; }
+
+h1, h2, h3, .display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.2px;
+}
+
+.wrap {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 40px);
+}
+
+/* focus visibility */
+a:focus-visible, button:focus-visible, input:focus-visible,
+select:focus-visible, .item:focus-visible {
+  outline: 3px solid var(--turmeric);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* =========================================================
+   NAV — chalkboard-style menu board, collapses to a
+   hand-drawn "hamburger ticket" on small screens
+   ========================================================= */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--leaf);
+  color: var(--paper);
+  box-shadow: var(--shadow-soft);
+}
+
+.site-nav .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 2.4vw, 1.4rem);
+  color: var(--paper);
+  white-space: nowrap;
+}
+
+.brand img {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 2px solid var(--turmeric);
+  object-fit: cover;
+  background: var(--paper);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-links a {
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.nav-links a:hover { background: rgba(255,255,255,0.1); }
+
+.nav-links a.cta {
+  background: var(--turmeric);
+  color: var(--ink);
+}
+.nav-links a.cta:hover { background: var(--turmeric-dark); }
+
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--paper);
+  font-size: 1.6rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 6px 10px;
+}
+
+        .register .nav-tabs .nav-link:hover {
+            border: none;
+        }
+
+        .text-align {
+            margin-top: -3%;
+            margin-bottom: -9%;
+
+            padding: 10%;
+            margin-left: 30%;
+        }
+
+        .form-new {
+            margin-right: 22%;
+            margin-left: 20%;
+        }
+
+        .register-heading {
+            margin-left: 21%;
+            margin-bottom: 10%;
+            color: #e9ecef;
+            width: 1100px;
+        }
+
+        .register-heading h1 {
+            margin-left: 21%;
+            margin-bottom: 10%;
+            color: #e9ecef;
+        }
+
+        .register {
+            background: -webkit-linear-gradient(left, #055a4f, #00c6ff);
+            margin-top: 3%;
+            padding: 3%;
+            border-radius: 2.5rem;
+        }
+
+        .btnSubmit {
+            width: 500px;
+            border-radius: 1rem;
+            padding: 1.5%;
+            color: #fff;
+            background-color: #03612e;
+            border: none;
+            cursor: pointer;
+            margin-right: 6%;
+            color: rgb(246, 246, 252);
+            margin-top: 4%;
+        }
+        *{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+.container{
+  position: relative;
+  max-width: 320px;
+  width: 700px;
+  margin: 50px auto 30px;
+  margin-left: 10px;
+}
+.select-btn{
+  display: block;
+  height: 30px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #d3cccc;
+  box-shadow: 0 5px 10px rgba(30, 0, 255, 0.1);
+}
+.select-btn .btn-text{
+  font-size: 17px;
+  font-weight: 400;
+  color: #000000;
+}
+.select-btn .arrow-dwn{
+  display: flex;
+  height: 21px;
+  width: 21px;
+  color: #fff;
+  font-size: 14px;
+  border-radius: 50%;
+  background: #6e93f7;
+  align-items: center;
+  justify-content: center;
+  transform: 0.3s;
+  margin-left: 250px;
+  margin-top: -20px;
+}
+.select-btn.open .arrow-dwn{
+  transform: rotate(-180deg);
+}
+.select-btn.open ~ .list-items{
+  opacity: 0;
+  animation-name: fadeInUp;
+  -webkit-animation-name: fadeInUp;
+  animation-duration: 0.4s;
+  animation-fill-mode: both;
+  -webkit-animation-duration: 0.4s;
+  -webkit-animation-fill-mode: both;
+}
+.list-items{
+  position: absolute;
+  max-width: 320px;
+  width: 100%;
+  margin-top: 15px;
+  border-radius: 8px;
+  padding: 16px;
+  background-color: #fff;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  animation-name: fadeInDown;
+  -webkit-animation-name: fadeInDown;
+  animation-duration: 0.35s;
+  animation-fill-mode: both;
+  -webkit-animation-duration: 0.35s;
+  -webkit-animation-fill-mode: both;
+}
+.list-items .item{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  list-style: none;
+  height: 50px;
+  cursor: pointer;
+  transition: 0.3s;
+  padding: 0 15px;
+  border-radius: 8px;
+}
+.list-items .item:hover{
+  background-color: #e3f2fd;
+}
+.item-left {
+  display: flex;
+  align-items: center;
+}
+.item .item-text{
+  font-size: 16px;
+  font-weight: 400;
+  color: #333;
+}
+.item .item-price{
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--chili);
+}
+.item .checkbox{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 16px;
+  width: 16px;
+  border-radius: 4px;
+  margin-right: 12px;
+  border: 1.5px solid #c0c0c0;
+  transition: all 0.3s ease-in-out;
+}
+.item.checked .checkbox{
+   background-color: #4070f4;
+   border-color: #4070f4;
+}
+.item.checked .check-icon{
+  transform: scale(1);
+}
+.checkbox .check-icon{
+  color: #fff;
+  font-size: 11px;
+  transform: scale(0);
+  transition: all 0.2s ease-in-out;
+}
+
+/* TOTAL CASH STYLING */
+.total-cash-box {
+  background: white;
+  color: #000000;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-align: center;
+  margin-top: 15px;
+  margin-left: 550px;
+  width: 500px;
+
+}
+
+@keyframes fadeInUp {
+  from{
+    transform: translate3d(0, 30px 0);
+  }
+  to{
+    transform: translate3d(0,0,0);
+    opacity: 1;
+  }
+}
+@keyframes fadeInDown {
+  from{
+    transform: translate3d(0,0,0);
+  }
+  to{
+    transform: translate3d(0,20px,0);
+    opacity: 0;
+  }
+}
+@media (max-width: 720px) {
+  .nav-toggle { display: block; }
+  .nav-links {
+    position: absolute;
+    visibility: hidden;
+    top: 72px;
+    left: 0;
+    right: 0;
+    background: var(--leaf-dark);
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+  .nav-links.open { max-height: 320px; }
+  .nav-links a {
+    border-radius: 0;
+    visibility: hidden;
+    padding: 16px clamp(16px, 4vw, 40px);
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+}
+ 
+@media screen and (max-width:325px) {
+  .site-nav{
+    width: 1300px;
+  }
+  .form-control{
+    margin-left: -100px;
+  }
+  .container{
+  
+    margin-left: -100px;
+  }
+  .arrow-dwn{
+    margin-left: -250px;
+  }
+  #sub{
+    margin-left: -100px;
+  }
+  *{
+    height: -1300px;
+  }
+}
+
+@media screen and (max-width:380px) {
+  .site-nav{
+    width: 1320px;
+  }
+  .form-control{
+    margin-left: -100px;
+  }
+  .container{
+  
+    margin-left: -100px;
+  }
+  .arrow-dwn{
+    margin-left: -250px;
+  }
+  #sub{
+    margin-left: -100px;
+  }
+  *{
+    height: -1300px;
+  }
+}
+
+@media screen and (max-width:430px) {
+  .site-nav{
+    width: 1300px;
+  }
+  .form-control{
+    margin-left: -100px;
+  }
+  .container{
+  
+    margin-left: -100px;
+  }
+  .arrow-dwn{
+    margin-left: -250px;
+  }
+  #sub{
+    margin-left: -100px;
+  }
+  *{
+    height: -1300px;
+  }
+}
+
+@media screen and (max-width:770px) {
+  .site-nav{
+    width: 1320px;
+  }
+  .form-control{
+    margin-left: -100px;
+  }
+  .container{
+  
+    margin-left: -100px;
+  }
+  .arrow-dwn{
+    margin-left: -250px;
+  }
+  #sub{
+    margin-left: -100px;
+  }
+  *{
+    height: -1300px;
+  }
+}
+
+@media screen and (max-width:1024px) {
+  .site-nav{
+    width: 1300px;
+  }
+  .form-control{
+    margin-left: -100px;
+  }
+  .container{
+  
+    margin-left: -100px;
+  }
+  .arrow-dwn{
+    margin-left: -250px;
+  }
+  #sub{
+    margin-left: -100px;
+  }
+  *{
+    height: -1300px;
+  }
+}
+
+    </style>
+</head>
+
+<body>
+
+  <nav class="site-nav">
+  <div class="wrap">
+    <a href="POC.index.html" class="brand">
+      <img src="img/prince_online_canteen_youtube_logo.png" alt="">
+      Prince Online Canteen
+    </a>
+    <button class="nav-toggle" aria-label="Toggle menu">&#9776;</button>
+    <div class="nav-links">
+      <a href="POC.index.html">HOME</a>
+      <a href="about.html">About</a>
+      <a href="METHORDE.html" class="cta">Order now</a>
+    </div>
+  </div>
+</nav>
+    <section class="oder">
+        <div class="row" style="width: 1100px;">
+            <div class="col-md-12" style="width: 1100px;">
+                <div class="tab-pane fade show active text-align form-new" id="home" role="tabpanel"
+                    aria-labelledby="home-tab" style="width: 1100px;">
+                   
+                    <div class="row register-form">
+                        <div class="col-md-12">
+                            <form autocomplete="off">
+                                <div class="form-group">
+                                    <input type="text" name="Name" id="name" class="form-control"
+                                        placeholder="Your Name *" value="" required="" style="border-radius: 10px;font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);"/>
+                                </div>
+                                <div class="form-group">
+                                    <input type="time" name="Email" id="time" class="form-control"
+                                        placeholder="TIME *" value="" required="" style="border-radius: 10px;font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);"/>
+                                </div>
+                                <div class="form-group">
+                                    <input type="number" name="Phone" id="phone" class="form-control"
+                                        placeholder="Your Contact Number *" value="" required="" style="border-radius: 10px;font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);"/>
+                                </div>
+                                   <div class="form-group">
+                                    <select name="teacher or student" id="methord" class="form-control"
+                                        placeholder="Your Contact Number *" value="" required="" style="border-radius: 10px;font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);">
+                                        <option value="STUDENT">STUDENT</option>
+                                        <option value="TEACHER">TEACHER</option>
+                                        <option value="PRINCIPAL">PRINCIPAL</option>
+                                    </select>
+                                </div>
+     <select type="text" name="Name" id="grade" class="form-control"
+                                        placeholder="Your Name *" value="" required="" style="border-radius: 10px;font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;color:darkorange;box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);">
+     <option value=""></option> 
+      <option value="3-A">3-A</option>
+       <option value="3-B">3-B</option>
+        <option value="4-A">4-A</option>
+         <option value="4-B">4-B</option>
+          <option value="5-A">5-A</option>
+           <option value="5-B">5-B</option>
+            <option value="6-A">6-A</option>
+             <option value="6-B">6-B</option>
+              <option value="6-C">6-C</option>
+               <option value="6-D">6-D</option>
+                <option value="6-E">6-E</option>
+                 <option value="7-A">7-A</option>
+                  <option value="7-B">7-B</option>
+                   <option value="7-C">7-C</option>
+                    <option value="7-D">7-D</option>
+                     <option value="7-E">7-E</option>
+                     <option value="8-A">8-A</option>
+                     <option value="8-B">8-B</option>
+                      <option value="8-C">8-C</option>
+                       <option value="8-D">8-D</option>
+                        <option value="8-E">8-E</option>
+                         <option value="9-A">9-A</option>
+                          <option value="9-B">9-B</option>
+                           <option value="9-C">9-C</option>
+                            <option value="9-D">9-D</option>
+                             <option value="9-E">9-E</option>
+                              <option value="10-A">10-A</option>
+                               <option value="10-B">10-B</option>
+                                <option value="10-C">10-C</option>
+                                 <option value="10-D">10-D</option>
+                                  <option value="10-E">10-E</option>
+                                   <option value="11-A">11-A</option>
+                                    <option value="11-B">11-B</option>
+                                     <option value="11-C">11-C</option>
+                                      <option value="11-D">11-D</option>
+                                       <option value="11-E">11-E</option>
+                                       <option value="OFFICE">OFFICE</option>
+                                       <option value="STAF ROOM">STAF ROOM</option>
+                                       <option value="ICT">ICT LAB</option>
+                                       <option value="SCIENCE">SCIENCE LAB</option>
+                                       <option value="SPORT">SPORT ROOM</option>
+                                       <option value="BOOK">BOOK SHOP</option>
+                                       <option value="MIUSIC">MIUSIC ROOM</option>
+                                       <option value="DANCING">DANCING ROOM</option>
+     </select>
+     <div class="container" placeholder="YOUR GRADE">
+         <div class="select-btn open" placeholder="YOUR GRADE">
+           <span class="btn-text">SELECT FOODS</span>
+         </div>
+    
+     <ul class="list-items">
+      <li class="item" data-price="200">
+        <div class="item-left">
+          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
+          <span class="item-text">FRIDE RICE - SMALL</span>
+        </div>
+        <span class="item-price">LKR 200</span>
+      </li>
+
+      <li class="item" data-price="300">
+        <div class="item-left">
+          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
+          <span class="item-text">FRIDE RICE - MEDIAM</span>
+        </div>
+        <span class="item-price">LKR 300</span>
+      </li>
+
+      <li class="item" data-price="500">
+        <div class="item-left">
+          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
+          <span class="item-text">FRIDE RICE - LARGE</span>
+        </div>
+        <span class="item-price">LKR 500</span>
+      </li>
+
+      <li class="item" data-price="50">
+        <div class="item-left">
+          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
+          <span class="item-text">WADEI</span>
+        </div>
+        <span class="item-price">LKR 50</span>
+      </li>
+      
+      <li class="item" data-price="50">
+        <div class="item-left">
+          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
+          <span class="item-text">MANGO JUICE</span>
+        </div>
+        <span class="item-price">LKR 50</span>
+      </li>
+
+      <li class="item" data-price="50">
+        <div class="item-left">
+          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
+          <span class="item-text">WOODAPPLE JUICE</span>
+        </div>
+        <span class="item-price">LKR 50</span>
+      </li>
+
+      <li class="item" data-price="300">
+        <div class="item-left">
+          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
+          <span class="item-text">BURIYANI</span>
+        </div>
+        <span class="item-price">LKR 300</span>
+      </li>
+
+      <li class="item" data-price="50">
+        <div class="item-left">
+          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
+          <span class="item-text">PARATA</span>
+        </div>
+        <span class="item-price">LKR 50</span>
+      </li>
+
+      <li class="item" data-price="100">
+        <div class="item-left">
+          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
+          <span class="item-text">EGG ROTI</span>
+        </div>
+        <span class="item-price">LKR 100</span>
+      </li>
+
+      <li class="item" data-price="100">
+        <div class="item-left">
+          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
+          <span class="item-text">STRING HOPPERS</span>
+        </div>
+        <span class="item-price">LKR 100</span>
+      </li>
+
+      <li class="item" data-price="100">
+        <div class="item-left">
+          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
+          <span class="item-text">EGG ROLE</span>
+        </div>
+        <span class="item-price">LKR 100</span>
+      </li>
+
+      <li class="item" data-price="50">
+        <div class="item-left">
+          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
+          <span class="item-text">POL ROTI</span>
+        </div>
+        <span class="item-price">LKR 50</span>
+      </li>
+
+      <li class="item" data-price="40">
+        <div class="item-left">
+          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
+          <span class="item-text">PATIS</span>
+        </div>
+        <span class="item-price">LKR 40</span>
+      </li>
+
+      <li class="item" data-price="50">
+        <div class="item-left">
+          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
+          <span class="item-text">KATLET</span>
+        </div>
+        <span class="item-price">LKR 50</span>
+      </li>
+
+      <li class="item" data-price="20">
+        <div class="item-left">
+          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
+          <span class="item-text">PARIPPU WADA</span>
+        </div>
+        <span class="item-price" style="color: red;">LKR 20</span>
+      </li>
+
+      <li class="item" data-price="50">
+        <div class="item-left">
+          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
+          <span class="item-text">HALAPA</span>
+        </div>
+        <span class="item-price">LKR 50</span>
+      </li>
+
+      <li class="item" data-price="50">
+        <div class="item-left">
+          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
+          <span class="item-text">YOGET</span>
+        </div>
+        <span class="item-price">LKR 50</span>
+      </li>
+
+      <li class="item" data-price="50">
+        <div class="item-left">
+          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
+          <span class="item-text">SALED</span>
+        </div>
+        <span class="item-price">LKR 50</span>
+      </li>
+     </ul>
+
+     <!-- Added Total Cash Container -->
+     <div class="total-cash-box">
+        Total Cash: <span id="total-cash">LKR 0.00</span>
+     </div>
+     </div>
+
+                                <div class="form-group">
+                                    <input type="button" name="submit" class="btnSubmit btn-block" onclick="gotowhatsapp()" value="Submit" id="sub" style="font-family: serif;"/>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </section>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+        function gotowhatsapp() {
+            var name = document.getElementById("name").value;
+            var phone = document.getElementById("phone").value;
+            var time = document.getElementById("time").value;
+            var checkedItems = document.querySelectorAll(".item.checked .item-text");
+            var foods = Array.from(checkedItems).map(el => el.innerText).join(", ");
+            var methord = document.getElementById("methord").value;
+            var totalCash = document.getElementById("total-cash").innerText;
+
+            var url = "https://wa.me/0711816576?text=" 
+                + "Name: " + encodeURIComponent(name) + "%0a"
+                + "Phone: " + encodeURIComponent(phone) + "%0a"
+                + "Time: " + encodeURIComponent(time) + "%0a"
+                + "Method: " + encodeURIComponent(methord) + "%0a"
+                + "Foods: " + encodeURIComponent(foods) + "%0a"
+                + "Total Cash: " + encodeURIComponent(totalCash);
+
+            window.open(url, '_blank').focus();
+        }
+
+        const selectBtn = document.querySelector(".select-btn"),
+              items = document.querySelectorAll(".item"),
+              totalCashDisplay = document.getElementById("total-cash");
+
+        selectBtn.addEventListener("click", () => {
+          selectBtn.classList.toggle("open");
+        });
+
+        items.forEach((item => {
+           item.addEventListener("click" , () => {
+            item.classList.toggle("checked");
+
+            let checked = document.querySelectorAll(".checked"),
+                btnText = document.querySelector(".btn-text");
+
+            if(checked && checked.length > 0){
+              btnText.innerText = checked.length + " selected";
+            } else{
+              btnText.innerText = "SELECT FOODS";
+            }
+
+            // Calculate total price based on data-price attribute
+            let total = 0;
+            checked.forEach(checkedItem => {
+              let price = parseFloat(checkedItem.getAttribute("data-price")) || 0;
+              total += price;
+            });
+
+            // Update Total Cash Display
+            totalCashDisplay.innerText = "LKR " + total.toFixed(2);
+           });
+        }));
+        function gotowhatsapp() {
+    var name = document.getElementById("name").value;
+    var phone = document.getElementById("phone").value;
+    var time = document.getElementById("time").value;
+    var checkedItems = document.querySelectorAll(".item.checked .item-text");
+    var foods = Array.from(checkedItems).map(el => el.innerText).join(", ");
+    var methord = document.getElementById("methord").value;
+    var grade = document.getElementById("grade").value;
+    var totalCash = document.getElementById("total-cash").innerText;
+
+    if (!name || !phone || checkedItems.length === 0) {
+        alert("කරුණාකර සියලු විස්තර සහ ආහාර තෝරන්න!");
+        return;
+    }
+
+    // New Order Object
+    var newOrder = {
+        id: Date.now(),
+        name: name,
+        phone: phone,
+        time: time,
+        methord: methord,
+        grade: grade,
+        foods: foods,
+        totalCash: totalCash,
+        status: "Pending",
+        date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+
+    // Save Order to Local Storage for Admin Panel
+    var orders = JSON.parse(localStorage.getItem("canteenOrders")) || [];
+    orders.push(newOrder);
+    localStorage.setItem("canteenOrders", JSON.stringify(orders));
+
+    // Open WhatsApp
+    var url = "https://wa.me/711816576?text=" 
+        + "Name: " + encodeURIComponent(name) + "%0a"
+        + "Phone: " + encodeURIComponent(phone) + "%0a"
+        + "Time: " + encodeURIComponent(time) + "%0a"
+        + "Method: " + encodeURIComponent(methord) + "%0a"
+        + "Grade/Place: " + encodeURIComponent(grade) + "%0a"
+        + "Foods: " + encodeURIComponent(foods) + "%0a"
+        + "Total Cash: " + encodeURIComponent(totalCash);
+
+    window.open(url, '_blank').focus();
+}
+const cardInput = document.getElementById("cardInput");
+const scanStatus = document.getElementById("scanStatus");
+const nameInput = document.getElementById("name");
+
+// Example Database of Registered Access Cards (You can fetch this from localstorage/database)
+const registeredAccessCards = {
+  "ACC1001": { name: "Kasun Perera", role: "STUDENT" },
+  "ACC1002": { name: "Nimal Silva", role: "TEACHER" },
+  "ACC1003": { name: "Kamal Fernando", role: "STUDENT" }
+};
+
+// Auto-focus logic so scanner always hits this field
+document.addEventListener("click", () => {
+    cardInput.focus();
+});
+
+cardInput.addEventListener("change", function () {
+    let scannedCode = this.value.trim().toUpperCase();
+    this.value = ""; // Clear input for next scan
+
+    // 1. Check Format (Example: Access Cards starts with 'ACC' or has exact 8 digits)
+    const isAccessCardFormat = scannedCode.startsWith("ACC") || scannedCode.length === 8;
+
+    // 2. Validate Card
+    if (isAccessCardFormat && registeredAccessCards[scannedCode]) {
+        let cardData = registeredAccessCards[scannedCode];
+        
+        // Success Action
+        scanStatus.innerText = "✅ Access Card Verified: " + cardData.name;
+        scanStatus.className = "scan-status status-success";
+        
+        // Auto-fill user details in form
+        nameInput.value = cardData.name;
+        document.getElementById("methord").value = cardData.role;
+        
+    } else {
+        // Reject invalid / non-access card
+        scanStatus.innerText = "❌ Invalid Access Card! Try again.";
+        scanStatus.className = "scan-status status-error";
+    }
+});
+
+
+    </script>
+</body>
+
+</html>

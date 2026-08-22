@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prince Online Canteen</title>
+<link rel="icon" href="img/prince_online_canteen_youtube_logo.png">
+<link rel="icon" href="img/prince_online_canteen_youtube_logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<style>
+  /* =========================================================
+   PRINCE ONLINE CANTEEN — design tokens
+   Palette grounded in a Sri Lankan school canteen:
+   turmeric (fried rice, curry), banana-leaf green, chili red,
+   rice-cream background, charcoal ink.
+   ========================================================= */
+:root {
+  --turmeric: #e3a021;
+  --turmeric-dark: #b97c12;
+  --chili: #c8401f;
+  --leaf: #2f5233;
+  --leaf-dark: #203823;
+  --leaf-light: #6f8f6a;
+  --cream: #faf3e3;
+  --cream-2: #f2e6cb;
+  --ink: #26221b;
+  --paper: #fffdf8;
+   
+  --primary: #d97706;
+  --primary-hover: #b45309;
+  --primary-light: #fef3c7;
+  --leaf-dark: #1b3822;
+  --leaf-mid: #2d5a37;
+  --bg-gradient: linear-gradient(135deg, #1b3822 0%, #2d5a37 50%, #0f2314 100%);
+  --paper: #ffffff;
+  --text-main: #1f2937;
+  --text-muted: #6b7280;
+  --border-color: #e5e7eb;
+  --radius-lg: 24px;
+  --radius-md: 14px;
+  --shadow-premium: 0 20px 50px rgba(0, 0, 0, 0.25);
+  --font-display: 'Baloo 2', cursive;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+
+  --font-display: "Baloo 2", "Trebuchet MS", sans-serif;
+  --font-body: "Inter", "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --radius: 18px;
+  --shadow-card: 0 8px 24px rgba(47, 82, 51, 0.14);
+  --shadow-soft: 0 2px 10px rgba(38, 34, 27, 0.08);
+  --container: 1180px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { 
+  scroll-behavior: smooth; 
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--cream);
+  color: var(--ink);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; display: block; }
+
+a { color: inherit; text-decoration: none; }
+
+h1, h2, h3, .display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.2px;
+}
+
+.wrap {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 40px);
+}
+
+/* focus visibility */
+a:focus-visible, button:focus-visible, input:focus-visible,
+select:focus-visible, .item:focus-visible {
+  outline: 3px solid var(--turmeric);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* =========================================================
+   NAV — chalkboard-style menu board, collapses to a
+   hand-drawn "hamburger ticket" on small screens
+   ========================================================= */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--leaf);
+  color: var(--paper);
+  box-shadow: var(--shadow-soft);
+}
+
+.site-nav .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 2.4vw, 1.4rem);
+  color: var(--paper);
+  white-space: nowrap;
+}
+
+.brand img {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 2px solid var(--turmeric);
+  object-fit: cover;
+  background: var(--paper);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-links a {
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.nav-links a:hover { background: rgba(255,255,255,0.1); }
+
+.nav-links a.cta {
+  background: var(--turmeric);
+  color: var(--ink);
+}
+.nav-links a.cta:hover { background: var(--turmeric-dark); }
+
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--paper);
+  font-size: 1.6rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 6px 10px;
+}
+
+@media (max-width: 720px) {
+  .nav-toggle { display: block; }
+  .nav-links {
+    position: absolute;
+    top: 72px;
+    left: 0;
+    right: 0;
+    background: var(--leaf-dark);
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+  .nav-links.open { max-height: 380px; }
+  .nav-links a {
+    border-radius: 0;
+    padding: 16px clamp(16px, 4vw, 40px);
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+}
+
+/* =========================================================
+   HERO
+   ========================================================= */
+.hero {
+  background:
+    radial-gradient(circle at 15% 20%, rgba(227,160,33,0.25), transparent 55%),
+    radial-gradient(circle at 85% 0%, rgba(200,64,31,0.15), transparent 50%),
+    var(--leaf);
+  color: var(--paper);
+  padding: clamp(48px, 8vw, 96px) 0 clamp(56px, 9vw, 110px);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero .wrap {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: clamp(24px, 5vw, 60px);
+  align-items: center;
+}
+
+@media (max-width: 860px) {
+  .hero .wrap { grid-template-columns: 1fr; text-align: center; }
+  .hero-art { order: -1; margin: 0 auto; max-width: 260px; }
+}
+
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  background: rgba(255,255,255,0.12);
+  padding: 6px 14px;
+  border-radius: 999px;
+  margin-bottom: 18px;
+  color: var(--turmeric);
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 5.2vw, 3.4rem);
+  margin-bottom: 16px;
+}
+
+.hero h1 span { color: var(--turmeric); }
+
+.hero p {
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  max-width: 46ch;
+  opacity: 0.9;
+  margin-bottom: 28px;
+}
+
+@media (max-width: 860px) {
+  .hero p { margin-left: auto; margin-right: auto; }
+}
+
+.hero-actions {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 860px) { .hero-actions { justify-content: center; } }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.98rem;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
+}
+.btn:active { transform: translateY(1px); }
+
+.btn-primary {
+  background: var(--turmeric);
+  color: var(--ink);
+  box-shadow: 0 6px 18px rgba(227,160,33,0.35);
+}
+.btn-primary:hover { background: var(--turmeric-dark); }
+
+.btn-ghost {
+  background: transparent;
+  border: 2px solid rgba(255,255,255,0.4);
+  color: var(--paper);
+}
+.btn-ghost:hover { border-color: var(--paper); }
+
+.btn-block { width: 100%; justify-content: center; }
+
+.hero-art {
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+  transform: rotate(-2deg);
+  border: 6px solid var(--paper);
+}
+
+/* =========================================================
+   SECTIONS
+   ========================================================= */
+.section {
+  padding: clamp(48px, 8vw, 88px) 0;
+}
+
+.section-head {
+  text-align: center;
+  max-width: 620px;
+  margin: 0 auto clamp(28px, 5vw, 48px);
+}
+
+.section-head .eyebrow { background: var(--cream-2); color: var(--chili); }
+
+.section-head h2 { font-size: clamp(1.6rem, 3.6vw, 2.3rem); color: var(--leaf-dark); }
+
+.section-head p { color: #52504a; margin-top: 10px; }
+
+/* =========================================================
+   MENU GRID — "tiffin ticket" cards
+   ========================================================= */
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: clamp(16px, 2.5vw, 26px);
+}
+
+.food-card {
+  background: var(--paper);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+}
+
+.food-card:hover { transform: translateY(-5px); box-shadow: 0 14px 30px rgba(47,82,51,0.2); }
+
+.food-card .thumb {
+  aspect-ratio: 4/3;
+  width: 100%;
+  object-fit: cover;
+  background: var(--cream-2);
+}
+
+.food-card .body {
+  padding: 18px 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.price-tag {
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--leaf-dark);
+  background: var(--cream-2);
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px dashed var(--leaf-light);
+}
+
+.food-card h3 { font-size: 1.05rem; color: var(--ink); }
+
+.food-card p.desc {
+  font-size: 0.88rem;
+  color: #5a5748;
+  flex: 1;
+}
+
+.food-card .btn { margin-top: 6px; align-self: flex-start; padding: 10px 20px; font-size: 0.88rem; }
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+.site-footer {
+  background: var(--ink);
+  color: var(--cream);
+  padding: 34px 0;
+}
+
+.site-footer .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.site-footer p { font-size: 0.85rem; opacity: 0.8; }
+
+.footer-badges { display: flex; gap: 10px; align-items: center; }
+.footer-badges img { width: 26px; height: 26px; border-radius: 50%; }
+
+/* =========================================================
+   FORMS (order / register)
+   ========================================================= */
+.form-page {
+  padding: clamp(36px, 7vw, 70px) 0 clamp(60px, 8vw, 100px);
+}
+
+.form-card {
+  max-width: 640px;
+  margin: 0 auto;
+  background: var(--paper);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: clamp(24px, 5vw, 44px);
+}
+
+.form-card h1 {
+  font-size: clamp(1.5rem, 3.6vw, 2rem);
+  color: var(--leaf-dark);
+  margin-bottom: 6px;
+}
+
+.form-card > p.sub {
+  color: #5a5748;
+  margin-bottom: 26px;
+  font-size: 0.95rem;
+}
+
+.field {
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--leaf-dark);
+}
+
+.field input,
+.field select {
+  width: 100%;
+  padding: 13px 14px;
+  border-radius: 12px;
+  border: 1.5px solid #dcd3ba;
+  background: var(--cream);
+  font-family: var(--font-body);
+  font-size: 0.98rem;
+  color: var(--ink);
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.field input:focus,
+.field select:focus {
+  border-color: var(--turmeric);
+  background: var(--paper);
+  outline: none;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+@media (max-width: 520px) {
+  .field-row { grid-template-columns: 1fr; }
+}
+
+/* Food multi-select dropdown */
+.select-wrap { position: relative; }
+
+.select-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 50px;
+  padding: 0 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  background: var(--cream);
+  border: 1.5px solid #dcd3ba;
+}
+
+.select-btn .btn-text { font-size: 0.98rem; color: var(--ink); }
+
+.select-btn .arrow-dwn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--leaf);
+  color: var(--paper);
+  font-size: 0.75rem;
+  transition: transform 0.25s ease;
+}
+
+.select-btn.open .arrow-dwn { transform: rotate(180deg); }
+
+.list-items {
+  list-style: none;
+  margin-top: 8px;
+  border-radius: 12px;
+  padding: 10px;
+  background: var(--paper);
+  box-shadow: var(--shadow-card);
+  max-height: 0;
+  overflow: hidden auto;
+  transition: max-height 0.3s ease;
+  border: 1px solid #ece3cb;
+}
+
+.list-items.open { max-height: 340px; }
+
+.list-items .item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.list-items .item:hover { background: var(--cream-2); }
+
+.item .checkbox {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  border: 1.5px solid #c9bfa2;
+  transition: all 0.2s ease;
+}
+
+.item.checked .checkbox { background: var(--leaf); border-color: var(--leaf); }
+.item .check-icon { color: var(--paper); font-size: 11px; transform: scale(0); transition: transform 0.15s ease; }
+.item.checked .check-icon { transform: scale(1); }
+
+.item .item-text { font-size: 0.95rem; color: var(--ink); }
+
+.helper-text { font-size: 0.8rem; color: #7a7869; margin-top: 6px; }
+
+/* Steps indicator (order page) */
+.steps {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 26px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--leaf-light);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.steps span { padding: 4px 10px; border-radius: 999px; background: var(--cream-2); }
+.steps span.active { background: var(--turmeric); color: var(--ink); }
+
+/* Utility */
+.center { text-align: center; }
+.small-note { font-size: 0.82rem; color: #7a7869; text-align: center; margin-top: 16px; } 
+
+@media screen and (max-width:325px) {
+  .npoc{
+    margin-left: -50px;
+  }  
+  .site-nav{
+    width: 435px;
+  }
+  .hero{
+    width: 435px;
+  }
+  .section{
+    width: 435px;  
+  }
+  .site-footer{
+    width: 435px;
+  }
+}
+@media screen and (max-width:380px) {
+    .npoc{
+    margin-left: -50px;
+  }  
+  .site-nav{
+    width: 435px;
+  }
+  .hero{
+    width: 435px;
+  }
+  .section{
+    width: 435px;  
+  }
+  .site-footer{
+    width: 435px;
+  }
+}
+@media  screen and (max-width:430px) {
+    .npoc{
+    margin-left: -50px;
+  }  
+  .site-nav{
+    width: 435px;
+  }
+  .hero{
+    width: 435px;
+  }
+  .section{
+    width: 435px;  
+  }
+  .site-footer{
+    width: 435px;
+  }
+}
+/* Badge styling for cart icon */
+.nav-links a.cta.cart-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#cart-count {
+  background: var(--chili);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 999px;
+  min-width: 20px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease;
+}
+
+#cart-count.bump {
+  transform: scale(1.3);
+}
+  
+
+</style>
+<body>
+
+<nav class="site-nav">
+  <div class="wrap">
+    <a href="POC.index.html" class="brand">
+      <img src="/img/prince_online_canteen_youtube_logo.png" alt="">
+      Prince Online Canteen
+    </a>
+    <button class="nav-toggle" aria-label="Toggle menu">&#9776;</button>
+    <div class="nav-links">
+      <a href="POC.index.html">HOME</a>
+      <a href="about.html">ABOUT</a>
+      <a href="create.html"><i class="fa-solid fa-user"></i> ACCOUNT</a>
+      <a href="admin-dashboard.html"><i class="fa-solid fa-user-plus"></i> ADDMING</a>
+      <a href="METHORDE.html" class="cta cart-link">
+        <i class="fa-solid fa-cart-shopping"></i> ORDER NOW
+        <span id="cart-count">0</span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-copy">
+      <span class="eyebrow">School canteen · online ordering</span>
+      <h1>Skip the queue.<br><span>Order your lunch</span> from your desk.</h1>
+      <p>Browse today's rice, short eats and juices, pick what you want, and send your order straight to the canteen on WhatsApp — ready when you get there.</p>
+      <div class="hero-actions">
+        <a href="METHORDE.html" class="btn btn-primary"><i class="fa-solid fa-cart-shopping"></i> Order now</a>
+        <a href="about.html" class="btn btn-ghost">ABOUT</a>
+      </div>
+    </div>
+    <video autoplay src="/video/Screen Recording 2026-07-24 at 21.37.59.mp4" class="hero-art" style="width: 500px;box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);"></video>
+  </div>
+</header>
+
+<section class="section" id="menu">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Today's menu</span>
+      <h2>What's cooking</h2>
+      <p>Prices in LKR. Tap "Order now" on any item to fill out your order.</p>
+    </div>
+
+    <div class="menu-grid">
+
+      <article class="food-card">
+        <img class="thumb" src="/img/photo-1609570324378-ec0c4c9b6ba8.avif" alt="Fried rice, small portion" onerror="this.style.background='var(--cream-2)'">
+        <div class="body">
+          <span class="price-tag">Rs. 200</span>
+          <h3>Fried rice — small</h3>
+          <p class="desc">Chop suey, chili paste, carrot curry. No chicken.</p>
+          <a href="METHORDE.html" class="btn btn-primary">Order now</a>
+        </div>
+      </article>
+
+      <article class="food-card">
+        <img class="thumb" src="/img/photo-1609570324378-ec0c4c9b6ba8.avif" alt="Fried rice, medium portion">
+        <div class="body">
+          <span class="price-tag">Rs. 300</span>
+          <h3>Fried rice — medium</h3>
+          <p class="desc">Chop suey, chili paste, carrot curry, chicken.</p>
+          <a href="METHORDE.html" class="btn btn-primary">Order now</a>
+        </div>
+      </article>
+
+      <article class="food-card">
+        <img class="thumb" src="/img/photo-1609570324378-ec0c4c9b6ba8.avif" alt="Fried rice, large portion">
+        <div class="body">
+          <span class="price-tag">Rs. 500</span>
+          <h3>Fried rice — large</h3>
+          <p class="desc">Chop suey, chili paste, carrot curry, chicken.</p>
+          <a href="METHORDE.html" class="btn btn-primary">Order now</a>
+        </div>
+      </article>
+
+      <article class="food-card">
+        <img class="thumb" src="/img/images.png" alt="Wade">
+        <div class="body">
+          <span class="price-tag">Rs. 50</span>
+          <h3>Wade</h3>
+          <p class="desc">Simple and crispy.</p>
+          <a href="METHORDE.html" class="btn btn-primary">Order now</a>
+        </div>
+      </article>
+
+      <article class="food-card">
+        <img class="thumb" src="/img/download.jpeg" alt="Mango juice">
+        <div class="body">
+          <span class="price-tag">Rs. 50</span>
+          <h3>Mango juice</h3>
+          <p class="desc">Fresh mango.</p>
+          <a href="METHORDE.html" class="btn btn-primary">Order now</a>
+        </div>
+      </article>
+
+      <article class="food-card">
+        <img class="thumb" src="/img/images (3).jpeg" alt="Wood apple juice">
+        <div class="body">
+          <span class="price-tag">Rs. 50</span>
+          <h3>Wood apple juice</h3>
+          <p class="desc">Fresh wood apple.</p>
+          <a href="METHORDE.html" class="btn btn-primary">Order now</a>
+        </div>
+      </article>
+
+      <article class="food-card">
+        <img class="thumb" src="/img/images (4).jpeg" alt="Biryani">
+        <div class="body">
+          <span class="price-tag">Rs. 300</span>
+          <h3>Biryani</h3>
+          <p class="desc">Full biryani.</p>
+          <a href="METHORDE.html" class="btn btn-primary">Order now</a>
+        </div>
+      </article>
+
+      <article class="food-card">
+        <img class="thumb" src="/img/imagesm.jpeg" alt="Paratha">
+        <div class="body">
+          <span class="price-tag">Rs. 50</span>
+          <h3>Paratha</h3>
+          <p class="desc">Add gravy.</p>
+          <a href="METHORDE.html" class="btn btn-primary">Order now</a>
+        </div>
+      </article>
+
+      <article class="food-card">
+        <img class="thumb" src="/img/images.jpeg" alt="Egg roti">
+        <div class="body">
+          <span class="price-tag">Rs. 100</span>
+          <h3>Egg roti</h3>
+          <p class="desc">Simple and filling.</p>
+          <a href="METHORDE.html" class="btn btn-primary">Order now</a>
+        </div>
+      </article>
+
+      <article class="food-card">
+        <img class="thumb" src="/img/imagespm.jpeg" alt="String hoppers">
+        <div class="body">
+          <span class="price-tag">Rs. 100</span>
+          <h3>String hoppers</h3>
+          <p class="desc">Add gravy.</p>
+          <a href="METHORDE.html" class="btn btn-primary">Order now</a>
+        </div>
+      </article>
+
+      <article class="food-card">
+        <img class="thumb" src="/img/imageslk.jpeg" alt="Egg roll">
+        <div class="body">
+          <span class="price-tag">Rs. 70</span>
+          <h3>Egg roll</h3>
+          <p class="desc">Add sauce.</p>
+          <a href="METHORDE.html" class="btn btn-primary">Order now</a>
+        </div>
+      </article>
+
+      <article class="food-card">
+        <img class="thumb" src="/img/imagespoc.jpeg" alt="Pol roti">
+        <div class="body">
+          <span class="price-tag">Rs. 50</span>
+          <h3>Pol roti</h3>
+          <p class="desc">Simple and fresh.</p>
+          <a href="METHORDE.html" class="btn btn-primary">Order now</a>
+        </div>
+      </article>
+
+      <article class="food-card">
+        <img class="thumb" src="/img/imagesi.jpeg" alt="Patties">
+        <div class="body">
+          <span class="price-tag">Rs. 40</span>
+          <h3>Patties</h3>
+          <p class="desc">Add sauce.</p>
+          <a href="METHORDE.html" class="btn btn-primary">Order now</a>
+        </div>
+      </article>
+
+      <article class="food-card">
+        <img class="thumb" src="/img/download (8).jpeg" alt="Cutlet">
+        <div class="body">
+          <span class="price-tag">Rs. 50</span>
+          <h3>Cutlet</h3>
+          <p class="desc">Add sauce.</p>
+          <a href="METHORDE.html" class="btn btn-primary">Order now</a>
+        </div>
+      </article>
+
+      <article class="food-card">
+        <img class="thumb" src="/img/wade.jpeg" alt="Parippu wade">
+        <div class="body">
+          <span class="price-tag">Rs. 50</span>
+          <h3>Parippu wade</h3>
+          <p class="desc">Regular.</p>
+          <a href="METHORDE.html" class="btn btn-primary">Order now</a>
+        </div>
+      </article>
+
+      <article class="food-card">
+        <img class="thumb" src="/img/halepa.jpeg" alt="Halapa">
+        <div class="body">
+          <span class="price-tag">Rs. 50</span>
+          <h3>Halapa</h3>
+          <p class="desc">Regular.</p>
+          <a href="METHORDE.html" class="btn btn-primary">Order now</a>
+        </div>
+      </article>
+
+      <article class="food-card">
+        <img class="thumb" src="/img/yoget.jpeg" alt="Yogurt">
+        <div class="body">
+          <span class="price-tag">Rs. 50</span>
+          <h3>Yogurt</h3>
+          <p class="desc">Fresh and cool.</p>
+          <a href="METHORDE.html" class="btn btn-primary">Order now</a>
+        </div>
+      </article>
+
+      <article class="food-card">
+        <img class="thumb" src="/img/saled.jpeg" alt="Salad">
+        <div class="body">
+          <span class="price-tag">Rs. 50</span>
+          <h3>Salad</h3>
+          <p class="desc">Mixed fruit.</p>
+          <a href="METHORDE.html" class="btn btn-primary">Order now</a>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <a style="margin-left: 350px;cursor: pointer;" class="npoc" href="">&copy; 2026 Prince Online Canteen — developed by {Yehansa Damsara}</a>
+    <div class="footer-badges">
+      <a href="https://youtube.com/@princeonlinecanteen?si=SDfOfEEU85iTan4n">
+      <img src="/img/prince_online_canteen_youtube_logo.png" alt="">
+      </a>
+      <a href="https://youtube.com/@princecollegemedia1487?si=UOU3XtB5fgcVxmsj">
+      <img src="/img/download.png" alt="">
+      </a>
+    </div>
+  </div>
+</footer>
+
+<script src="js/script.js">
+  // Mobile nav toggle
+document.addEventListener("DOMContentLoaded", () => {
+  const navToggle = document.querySelector(".nav-toggle");
+  const navLinks = document.querySelector(".nav-links");
+  if (navToggle && navLinks) {
+    navToggle.addEventListener("click", () => {
+      navLinks.classList.toggle("open");
+    });
+  }
+
+  // Food multi-select dropdown (order page)
+  const selectBtn = document.querySelector(".select-btn");
+  const listItems = document.querySelector(".list-items");
+  const items = document.querySelectorAll(".list-items .item");
+  const btnText = document.querySelector(".select-btn .btn-text");
+
+  if (selectBtn && listItems) {
+    selectBtn.addEventListener("click", () => {
+      selectBtn.classList.toggle("open");
+      listItems.classList.toggle("open");
+    });
+  }
+
+  items.forEach((item) => {
+    item.addEventListener("click", () => {
+      item.classList.toggle("checked");
+      const checked = document.querySelectorAll(".list-items .item.checked");
+      if (checked.length > 0) {
+        btnText.textContent = checked.length + " item" + (checked.length > 1 ? "s" : "") + " selected";
+      } else {
+        btnText.textContent = "Select foods";
+      }
+    });
+  });
+});
+
+// Build the WhatsApp order message
+function gotowhatsapp() {
+  const name = document.getElementById("name")?.value.trim() || "";
+  const phone = document.getElementById("phone")?.value.trim() || "";
+  const time = document.getElementById("time")?.value || "";
+  const methord = document.getElementById("methord")?.value || "";
+  const grade = document.getElementById("grade")?.value || "";
+  const checkedItems = document.querySelectorAll(".list-items .item.checked .item-text");
+  const foods = Array.from(checkedItems).map((el) => el.textContent.trim()).join(", ");
+
+  if (!name || !phone || foods.length === 0) {
+    alert("Please enter your name, contact number, and select at least one food item.");
+    return;
+  }
+
+  const message =
+    "Name: " + name + "\n" +
+    "Phone: " + phone + "\n" +
+    "Pickup time: " + time + "\n" +
+    "I am a: " + methord + "\n" +
+    "Class/Room: " + grade + "\n" +
+    "Order: " + foods;
+
+  const url = "https://wa.me/94711815673?text=" + encodeURIComponent(message);
+  window.open(url, "_blank");
+}
+
+</script>
+</body>
+</html>

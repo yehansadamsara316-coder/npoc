@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel — Prince Online Canteen</title>
+<link rel="icon" href="img/prince_online_canteen_youtube_logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root {
+  --turmeric: #e3a021;
+  --turmeric-dark: #b97c12;
+  --chili: #c8401f;
+  --leaf: #2f5233;
+  --leaf-dark: #203823;
+  --cream: #faf3e3;
+  --ink: #26221b;
+  --paper: #fffdf8;
+  --font-display: "Baloo 2", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --radius: 12px;
+  --shadow-card: 0 8px 24px rgba(47, 82, 51, 0.14);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-body);
+  background: var(--cream);
+  color: var(--ink);
+  line-height: 1.5;
+}
+.site-nav {
+  background: var(--leaf);
+  color: var(--paper);
+  padding: 16px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.brand {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.admin-container {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+.card {
+  background: var(--paper);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: 24px;
+  margin-bottom: 30px;
+}
+h2 {
+  font-family: var(--font-display);
+  color: var(--leaf-dark);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+th, td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #e0d8c3;
+}
+th {
+  background: var(--cream);
+  color: var(--leaf-dark);
+  font-weight: 600;
+}
+.badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.badge-student { background: #e0f2fe; color: #0369a1; }
+.badge-teacher { background: #fef3c7; color: #b45309; }
+.badge-staff { background: #dcfce7; color: #15803d; }
+
+.btn-action {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  margin-right: 5px;
+}
+.btn-approve { background: #22c55e; color: #fff; }
+.btn-reject { background: var(--chili); color: #fff; }
+.btn-delete { background: #64748b; color: #fff; }
+.empty-msg {
+  text-align: center;
+  color: #7a7869;
+  padding: 20px 0;
+}
+
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="brand">
+    <i class="fa-solid fa-user-shield"></i> Prince Canteen Admin Panel
+  </div>
+</nav>
+
+<div class="admin-container">
+
+  <!-- Pending Approvals Section -->
+  <div class="card">
+    <h2><i class="fa-solid fa-clock" style="color: #d97706;"></i> Pending User Approvals</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Full Name</th>
+          <th>Email / Username</th>
+          <th>Role</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="pendingTable">
+        <!-- JS වලින් එකතු වේ -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Approved Users Section -->
+  <div class="card">
+    <h2><i class="fa-solid fa-circle-check" style="color: #22c55e;"></i> Approved Accounts</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Date Approved</th>
+          <th>Full Name</th>
+          <th>Email / Username</th>
+          <th>Role</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="approvedTable">
+        <!-- JS වලින් එකතු වේ -->
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+  function renderTables() {
+    const pendingUsers = JSON.parse(localStorage.getItem('pendingAdminApprovals')) || [];
+    const approvedUsers = JSON.parse(localStorage.getItem('approvedAccounts')) || [];
+
+    const pendingTable = document.getElementById('pendingTable');
+    const approvedTable = document.getElementById('approvedTable');
+
+    // Render Pending Table
+    if (pendingUsers.length === 0) {
+      pendingTable.innerHTML = `<tr><td colspan="5" class="empty-msg">No pending approval requests.</td></tr>`;
+    } else {
+      pendingTable.innerHTML = pendingUsers.map(user => `
+        <tr>
+          <td>${user.date || 'N/A'}</td>
+          <td><b>${user.fullName}</b></td>
+          <td>${user.email}</td>
+          <td><span class="badge badge-${user.role.toLowerCase()}">${user.role}</span></td>
+          <td>
+            <button class="btn-action btn-approve" onclick="approveUser(${user.id})"><i class="fa-solid fa-check"></i> Approve</button>
+            <button class="btn-action btn-reject" onclick="rejectUser(${user.id})"><i class="fa-solid fa-xmark"></i> Reject</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // Render Approved Table
+    if (approvedUsers.length === 0) {
+      approvedTable.innerHTML = `<tr><td colspan="5" class="empty-msg">No approved users yet.</td></tr>`;
+    } else {
+      approvedTable.innerHTML = approvedUsers.map(user => `
+        <tr>
+          <td>${user.date || 'N/A'}</td>
+          <td><b>${user.fullName}</b></td>
+          <td>${user.email}</td>
+          <td><span class="badge badge-${user.role.toLowerCase()}">${user.role}</span></td>
+          <td>
+            <button class="btn-action btn-delete" onclick="deleteApprovedUser(${user.id})"><i class="fa-solid fa-trash"></i> Delete</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+  }
+
+  // Approve User Function
+  function approveUser(id) {
+    let pendingUsers = JSON.parse(localStorage.getItem('pendingAdminApprovals')) || [];
+    let approvedUsers = JSON.parse(localStorage.getItem('approvedAccounts')) || [];
+
+    const userToApprove = pendingUsers.find(u => u.id === id);
+    if (userToApprove) {
+      approvedUsers.push(userToApprove);
+      pendingUsers = pendingUsers.filter(u => u.id !== id);
+
+      localStorage.setItem('pendingAdminApprovals', JSON.stringify(pendingUsers));
+      localStorage.setItem('approvedAccounts', JSON.stringify(approvedUsers));
+      renderTables();
+    }
+  }
+
+  // Reject User Function
+  function rejectUser(id) {
+    let pendingUsers = JSON.parse(localStorage.getItem('pendingAdminApprovals')) || [];
+    pendingUsers = pendingUsers.filter(u => u.id !== id);
+    localStorage.setItem('pendingAdminApprovals', JSON.stringify(pendingUsers));
+    renderTables();
+  }
+
+  // Delete Approved User Function
+  function deleteApprovedUser(id) {
+    if (confirm("Are you sure you want to remove this account?")) {
+      let approvedUsers = JSON.parse(localStorage.getItem('approvedAccounts')) || [];
+      approvedUsers = approvedUsers.filter(u => u.id !== id);
+      localStorage.setItem('approvedAccounts', JSON.stringify(approvedUsers));
+      renderTables();
+    }
+  }
+
+  // Run on page load
+  renderTables();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prince Online Canteen - Admin Panel</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --leaf: #2f5233;
+            --leaf-dark: #203823;
+            --turmeric: #e3a021;
+            --cream: #faf3e3;
+            --chili: #c8401f;
+        }
+        body {
+            background-color: var(--cream);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+        }
+        .header-box {
+            background: var(--leaf);
+            color: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .stat-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            text-align: center;
+            border-bottom: 4px solid var(--leaf);
+        }
+        .stat-card h3 {
+            font-size: 1.1rem;
+            color: #666;
+        }
+        .stat-card p {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--leaf-dark);
+            margin: 0;
+        }
+        .section-box {
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-top: 20px;
+        }
+        .badge-pending { background-color: #ffc107; color: #000; }
+        .badge-completed { background-color: #28a745; color: #fff; }
+        .badge-food-count {
+            background-color: var(--turmeric);
+            color: #000;
+            font-size: 1.1rem;
+            padding: 5px 12px;
+            border-radius: 20px;
+        }
+        .btn-clear {
+            background-color: var(--chili);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container-fluid">
+        <!-- Header -->
+        <div class="header-box">
+            <h2>Prince Canteen - Admin Dashboard</h2>
+            <button class="btn btn-clear btn-sm" onclick="clearAllOrders()">Clear All Orders</button>
+        </div>
+
+        <!-- Analytics Cards -->
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <div class="stat-card">
+                    <h3>Total Orders</h3>
+                    <p id="total-orders-count">0</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="stat-card">
+                    <h3>Pending Orders</h3>
+                    <p id="pending-orders-count">0</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="stat-card" style="border-bottom-color: var(--turmeric);">
+                    <h3>Total Income</h3>
+                    <p id="total-income">LKR 0.00</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOD SUMMARY SECTION -->
+        <div class="section-box">
+            <h4 class="text-success"><i class="fas fa-utensils"></i> Today's Pending Food Summary (අද දින කෑම වර්ග අනුව එකතුව)</h4>
+            <div class="table-responsive mt-3">
+                <table class="table table-bordered table-striped">
+                    <thead class="bg-success text-white">
+                        <tr>
+                            <th>Food Item Name (ආහාර වර්ගය)</th>
+                            <th class="text-center" style="width: 200px;">Total Quantity (එකතුව)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="food-summary-body">
+                        <!-- Dynamic Food Summary Data -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TODAY'S ORDERS TABLE -->
+        <div class="section-box" style="border-top: 5px solid #28a745;">
+            <h4 class="text-success"><i class="fas fa-calendar-day"></i> Today's Orders (අද දින ලබාදුන් Orders)</h4>
+            <div class="table-responsive">
+                <table class="table table-hover mt-3">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Pickup Time</th>
+                            <th>Name</th>
+                            <th>Role/Grade</th>
+                            <th>Phone</th>
+                            <th>Ordered Foods</th>
+                            <th>Total Price</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="today-orders-body">
+                        <!-- Dynamic Today Orders Data -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- YESTERDAY'S ORDERS TABLE -->
+        <div class="section-box" style="border-top: 5px solid #6c757d;">
+            <h4 class="text-secondary"><i class="fas fa-history"></i> Yesterday's Orders (ඊයේ දින ලබාදුන් Orders)</h4>
+            <div class="table-responsive">
+                <table class="table table-hover mt-3">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Pickup Time</th>
+                            <th>Name</th>
+                            <th>Role/Grade</th>
+                            <th>Phone</th>
+                            <th>Ordered Foods</th>
+                            <th>Total Price</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="yesterday-orders-body">
+                        <!-- Dynamic Yesterday Orders Data -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+    
+
+    <script>
+        // දින සැසඳීම සඳහා Helper Function එකක්
+        function getFormattedDate(dateObj) {
+            return dateObj.toISOString().split('T')[0]; // YYYY-MM-DD
+        }
+
+        function loadOrders() {
+            var orders = JSON.parse(localStorage.getItem("canteenOrders")) || [];
+            
+            // Time අනුව Sort කිරීම
+            orders.sort((a, b) => (a.time > b.time) ? 1 : -1);
+
+            var todayBody = document.getElementById("today-orders-body");
+            var yesterdayBody = document.getElementById("yesterday-orders-body");
+            var foodSummaryBody = document.getElementById("food-summary-body");
+            
+            todayBody.innerHTML = "";
+            yesterdayBody.innerHTML = "";
+            foodSummaryBody.innerHTML = "";
+
+            var totalIncome = 0;
+            var pendingCount = 0;
+            var foodCounts = {};
+
+            // අද සහ ඊයේ දිනයන් සදා ගැනීම
+            var now = new Date();
+            var todayStr = getFormattedDate(now);
+
+            var yesterday = new Date(now);
+            yesterday.setDate(now.getDate() - 1);
+            var yesterdayStr = getFormattedDate(yesterday);
+
+            var todayOrdersCount = 0;
+            var yesterdayOrdersCount = 0;
+
+            if (orders.length === 0) {
+                todayBody.innerHTML = `<tr><td colspan="8" class="text-center text-muted">අද දින Orders කිසිවක් නොමැත.</td></tr>`;
+                yesterdayBody.innerHTML = `<tr><td colspan="8" class="text-center text-muted">ඊයේ දින Orders කිසිවක් නොමැත.</td></tr>`;
+                foodSummaryBody.innerHTML = `<tr><td colspan="2" class="text-center text-muted">පෙන්ඩින් Orders කිසිවක් නොමැත.</td></tr>`;
+            } else {
+                orders.forEach(function(order) {
+                    var priceNum = parseFloat(order.totalCash.replace("LKR ", "")) || 0;
+                    totalIncome += priceNum;
+
+                    // Order එක දාපු දිනය ලබා ගැනීම (නැත්නම් අද දිනය ලෙස ගැනීම)
+                    var orderDateStr = order.orderDateOnly ? order.orderDateOnly : todayStr;
+
+                    if(order.status === "Pending") {
+                        pendingCount++;
+
+                        // අද දිනට අදාළ කෑම පමණක් Summary එකට ගණනය කිරීම
+                        if (orderDateStr === todayStr && order.foods) {
+                            var itemsList = order.foods.split(",");
+                            itemsList.forEach(function(item) {
+                                var cleanItem = item.trim();
+                                if (cleanItem) {
+                                    foodCounts[cleanItem] = (foodCounts[cleanItem] || 0) + 1;
+                                }
+                            });
+                        }
+                    }
+
+                    var badgeClass = order.status === "Completed" ? "badge-completed" : "badge-pending";
+
+                    var row = `
+                        <tr>
+                            <td>
+                                <strong class="text-danger" style="font-size: 1.1rem;"><i class="far fa-clock"></i> ${order.time}</strong>
+                                <br><small class="text-muted">Placed: ${order.date || ''}</small>
+                            </td>
+                            <td><b>${order.name}</b></td>
+                            <td><span class="badge badge-info">${order.methord}</span> <br>${order.grade || ''}</td>
+                            <td><a href="tel:${order.phone}">${order.phone}</a></td>
+                            <td><small>${order.foods}</small></td>
+                            <td><b>${order.totalCash}</b></td>
+                            <td><span class="badge ${badgeClass}">${order.status}</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-success mb-1" onclick="markComplete(${order.id})" title="Mark Complete">✔ Done</button>
+                                <button class="btn btn-sm btn-danger mb-1" onclick="deleteOrder(${order.id})" title="Delete">🗑 Delete</button>
+                            </td>
+                        </tr>
+                    `;
+
+                    // අද සහ ඊයේ අනුව වෙන් කර Table වලට එකතු කිරීම
+                    if (orderDateStr === todayStr) {
+                        todayBody.innerHTML += row;
+                        todayOrdersCount++;
+                    } else if (orderDateStr === yesterdayStr) {
+                        yesterdayBody.innerHTML += row;
+                        yesterdayOrdersCount++;
+                    }
+                });
+
+                if (todayOrdersCount === 0) {
+                    todayBody.innerHTML = `<tr><td colspan="8" class="text-center text-muted">අද දින Orders කිසිවක් නොමැත.</td></tr>`;
+                }
+                if (yesterdayOrdersCount === 0) {
+                    yesterdayBody.innerHTML = `<tr><td colspan="8" class="text-center text-muted">ඊයේ දින Orders කිසිවක් නොමැත.</td></tr>`;
+                }
+
+                // Food Summary Render කිරීම
+                var foodKeys = Object.keys(foodCounts);
+                if (foodKeys.length === 0) {
+                    foodSummaryBody.innerHTML = `<tr><td colspan="2" class="text-center text-muted">අද දින පෙන්ඩින් Orders කිසිවක් නොමැත.</td></tr>`;
+                } else {
+                    foodKeys.forEach(function(foodName) {
+                        var summaryRow = `
+                            <tr>
+                                <td><b>${foodName}</b></td>
+                                <td class="text-center"><span class="badge badge-food-count">${foodCounts[foodName]}</span></td>
+                            </tr>
+                        `;
+                        foodSummaryBody.innerHTML += summaryRow;
+                    });
+                }
+            }
+
+            // Dashboard Stats
+            document.getElementById("total-orders-count").innerText = orders.length;
+            document.getElementById("pending-orders-count").innerText = pendingCount;
+            document.getElementById("total-income").innerText = "LKR " + totalIncome.toFixed(2);
+        }
+
+        function markComplete(id) {
+            var orders = JSON.parse(localStorage.getItem("canteenOrders")) || [];
+            orders = orders.map(order => {
+                if(order.id === id) order.status = "Completed";
+                return order;
+            });
+            localStorage.setItem("canteenOrders", JSON.stringify(orders));
+            loadOrders();
+        }
+
+        function deleteOrder(id) {
+            var orders = JSON.parse(localStorage.getItem("canteenOrders")) || [];
+            orders = orders.filter(order => order.id !== id);
+            localStorage.setItem("canteenOrders", JSON.stringify(orders));
+            loadOrders();
+        }
+
+        function clearAllOrders() {
+            if(confirm("ඔබට සියලුම Orders ඉවත් කිරීමට අවශ්‍යද?")) {
+                localStorage.removeItem("canteenOrders");
+                loadOrders();
+            }
+        }
+
+        setInterval(loadOrders, 5000);
+        loadOrders();
+    </script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal — Prince Online Canteen</title>
+    <link rel="icon" href="img/prince_online_canteen_youtube_logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+          --turmeric: #e3a021;
+          --leaf: #2f5233;
+          --leaf-dark: #203823;
+          --cream: #faf3e3;
+          --ink: #26221b;
+          --paper: #fffdf8;
+          --radius: 18px;
+          --shadow-card: 0 8px 24px rgba(47, 82, 51, 0.14);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--cream); color: var(--ink); }
+        a { color: inherit; text-decoration: none; }
+        
+        .site-nav {
+          background: var(--leaf); color: var(--paper); padding: 0 40px; height: 72px;
+          display: flex; align-items: center; justify-content: space-between;
+        }
+        .brand { display: flex; align-items: center; gap: 12px; font-family: "Baloo 2", sans-serif; font-size: 1.2rem; }
+        .brand img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--turmeric); object-fit: cover; background: var(--paper); }
+
+        .auth-container { max-width: 420px; margin: 60px auto; background: var(--paper); padding: 40px; border-radius: var(--radius); box-shadow: var(--shadow-card); text-align: center; }
+        .auth-container h1 { font-family: "Baloo 2", sans-serif; color: var(--leaf-dark); margin-bottom: 8px; }
+        .auth-subtitle { font-size: 0.9rem; color: #665c49; margin-bottom: 24px; }
+        
+        .field { margin-bottom: 20px; text-align: left; display: flex; flex-direction: column; gap: 6px; }
+        .field label { font-size: 0.85rem; font-weight: 600; color: var(--leaf-dark); }
+        .field input { width: 100%; padding: 14px; border-radius: 10px; border: 1.5px solid #dcd3ba; background: var(--cream); font-size: 1rem; text-align: center; letter-spacing: 2px; }
+        
+        .btn-submit { width: 100%; padding: 14px; background: var(--turmeric); border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 1rem; transition: background 0.2s; }
+        .btn-submit:hover { background: #cca021; }
+        
+        .error-msg { color: #d93838; font-size: 0.85rem; margin-top: 10px; display: none; }
+    </style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <a href="POC.index.html" class="brand">
+    <img src="img/prince_online_canteen_youtube_logo.png" alt="Logo">
+    Prince Online Canteen
+  </a>
+  <a href="POC.index.html" style="font-weight: 600;"><i class="fa-solid fa-arrow-left"></i> Home</a>
+</nav>
+
+<div class="auth-container">
+    <h1>Admin Access</h1>
+    <p class="auth-subtitle">Enter your single admin password to proceed</p>
+    
+    <form onsubmit="handleLogin(event)">
+        <div class="field">
+            <label>Admin Passcode</label>
+            <input type="password" id="adminPass" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn-submit">Login to Dashboard</button>
+        <div id="errorMsg" class="error-msg">Incorrect password! Please try again.</div>
+    </form>
+</div>
+
+<script>
+    function handleLogin(e) {
+        e.preventDefault();
+        const pass = document.getElementById('adminPass').value;
+        const errorText = document.getElementById('errorMsg');
+        
+        // Set your single admin password here (e.g., admin123)
+        if (pass === "admin123") {
+            window.location.href = "adming.html";
+        } else {
+            errorText.style.display = "block";
+        }
+    }
+   
+    document.querySelector('form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Get user input values (adjust IDs/names to match your form fields)
+        const name = document.querySelector('input[name="fullname"]') ? document.querySelector('input[name="fullname"]').value : "New Student";
+        const email = document.querySelector('input[name="email"]').value;
+        const role = "Student"; // Default role
+        
+        const newAccount = {
+            id: Date.now(),
+            name: name,
+            email: email,
+            role: role,
+            status: "Pending Approval"
+        };
+        
+        // Retrieve existing pending users or initialize array
+        let pendingUsers = JSON.parse(localStorage.getItem('pendingAdminApprovals')) || [];
+        pendingUsers.push(newAccount);
+        localStorage.setItem('pendingAdminApprovals', JSON.stringify(pendingUsers));
+        
+        alert('Registration submitted successfully! Please wait for Admin approval.');
+        window.location.href = 'account.html';
+    });
+
+</script>
+
+</body>
+</html>
