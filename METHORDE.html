@@ -6,14 +6,11 @@
     <title>SELECT OPTION - POC</title>
     <link rel="icon" href="prince_online_canteen_youtube_logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <style>
-  /* =========================================================
+/* =========================================================
    PRINCE ONLINE CANTEEN — design tokens
-   Palette grounded in a Sri Lankan school canteen:
-   turmeric (fried rice, curry), banana-leaf green, chili red,
-   rice-cream background, charcoal ink.
    ========================================================= */
 :root {
   --turmeric: #e3a021;
@@ -49,6 +46,9 @@ body {
   color: var(--ink);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 img { max-width: 100%; display: block; }
@@ -66,6 +66,7 @@ h1, h2, h3, .display {
   max-width: var(--container);
   margin: 0 auto;
   padding: 0 clamp(16px, 4vw, 40px);
+  width: 100%;
 }
 
 /* focus visibility */
@@ -84,10 +85,7 @@ select:focus-visible, .item:focus-visible {
   }
 }
 
-/* =========================================================
-   NAV — chalkboard-style menu board, collapses to a
-   hand-drawn "hamburger ticket" on small screens
-   ========================================================= */
+/* NAV */
 .site-nav {
   position: sticky;
   top: 0;
@@ -179,74 +177,11 @@ select:focus-visible, .item:focus-visible {
   }
 }
 
-/* =========================================================
-   HERO
-   ========================================================= */
-.hero {
-  background:
-    radial-gradient(circle at 15% 20%, rgba(227,160,33,0.25), transparent 55%),
-    radial-gradient(circle at 85% 0%, rgba(200,64,31,0.15), transparent 50%),
-    var(--leaf);
-  color: var(--paper);
-  padding: clamp(48px, 8vw, 96px) 0 clamp(56px, 9vw, 110px);
-  position: relative;
-  overflow: hidden;
-}
-
-.hero .wrap {
-  display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: clamp(24px, 5vw, 60px);
-  align-items: center;
-}
-
-@media (max-width: 860px) {
-  .hero .wrap { grid-template-columns: 1fr; text-align: center; }
-  .hero-art { order: -1; margin: 0 auto; max-width: 260px; }
-}
-
-.eyebrow {
-  display: inline-block;
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  background: rgba(255,255,255,0.12);
-  padding: 6px 14px;
-  border-radius: 999px;
-  margin-bottom: 18px;
-  color: var(--turmeric);
-}
-
-.hero h1 {
-  font-size: clamp(2rem, 5.2vw, 3.4rem);
-  margin-bottom: 16px;
-}
-
-.hero h1 span { color: var(--turmeric); }
-
-.hero p {
-  font-size: clamp(1rem, 2vw, 1.15rem);
-  max-width: 46ch;
-  opacity: 0.9;
-  margin-bottom: 28px;
-}
-
-@media (max-width: 860px) {
-  .hero p { margin-left: auto; margin-right: auto; }
-}
-
-.hero-actions {
-  display: flex;
-  gap: 14px;
-  flex-wrap: wrap;
-}
-
-@media (max-width: 860px) { .hero-actions { justify-content: center; } }
-
+/* BUTTONS */
 .btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   padding: 14px 28px;
   border-radius: 999px;
@@ -258,331 +193,92 @@ select:focus-visible, .item:focus-visible {
 }
 .btn:active { transform: translateY(1px); }
 
-.btn-primary {
+/* SELECT OPTION SECTION (RESPONSIVE) */
+.option-selection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(40px, 8vw, 80px) 20px;
+  text-align: center;
+}
+
+.option-title {
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-size: clamp(2rem, 6vw, 3.2rem);
+  color: var(--leaf-dark);
+  margin-bottom: 40px;
+  letter-spacing: 1px;
+}
+
+.option-actions {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  max-width: 600px;
+}
+
+.option-btn {
   background: var(--turmeric);
   color: var(--ink);
-  box-shadow: 0 6px 18px rgba(227,160,33,0.35);
-}
-.btn-primary:hover { background: var(--turmeric-dark); }
-
-.btn-ghost {
-  background: transparent;
-  border: 2px solid rgba(255,255,255,0.4);
-  color: var(--paper);
-}
-.btn-ghost:hover { border-color: var(--paper); }
-
-.btn-block { width: 100%; justify-content: center; }
-
-.hero-art {
-  border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.35);
-  transform: rotate(-2deg);
-  border: 6px solid var(--paper);
-}
-
-/* =========================================================
-   SECTIONS
-   ========================================================= */
-.section {
-  padding: clamp(48px, 8vw, 88px) 0;
-}
-
-.section-head {
-  text-align: center;
-  max-width: 620px;
-  margin: 0 auto clamp(28px, 5vw, 48px);
-}
-
-.section-head .eyebrow { background: var(--cream-2); color: var(--chili); }
-
-.section-head h2 { font-size: clamp(1.6rem, 3.6vw, 2.3rem); color: var(--leaf-dark); }
-
-.section-head p { color: #52504a; margin-top: 10px; }
-
-/* =========================================================
-   MENU GRID — "tiffin ticket" cards
-   ========================================================= */
-.menu-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: clamp(16px, 2.5vw, 26px);
-}
-
-.food-card {
-  background: var(--paper);
-  border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: var(--shadow-card);
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  position: relative;
-}
-
-.food-card:hover { transform: translateY(-5px); box-shadow: 0 14px 30px rgba(47,82,51,0.2); }
-
-.food-card .thumb {
-  aspect-ratio: 4/3;
-  width: 100%;
-  object-fit: cover;
-  background: var(--cream-2);
-}
-
-.food-card .body {
-  padding: 18px 18px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  flex: 1;
-}
-
-.price-tag {
-  align-self: flex-start;
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--leaf-dark);
-  background: var(--cream-2);
-  padding: 4px 10px;
-  border-radius: 6px;
-  border: 1px dashed var(--leaf-light);
-}
-
-.food-card h3 { font-size: 1.05rem; color: var(--ink); }
-
-.food-card p.desc {
-  font-size: 0.88rem;
-  color: #5a5748;
-  flex: 1;
-}
-
-.food-card .btn { margin-top: 6px; align-self: flex-start; padding: 10px 20px; font-size: 0.88rem; }
-
-/* =========================================================
-   FOOTER
-   ========================================================= */
-.site-footer {
-  background: var(--ink);
-  color: var(--cream);
-  padding: 34px 0;
-}
-
-.site-footer .wrap {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.site-footer p { font-size: 0.85rem; opacity: 0.8; }
-
-.footer-badges { display: flex; gap: 10px; align-items: center; }
-.footer-badges img { width: 26px; height: 26px; border-radius: 50%; }
-
-/* =========================================================
-   FORMS (order / register)
-   ========================================================= */
-.form-page {
-  padding: clamp(36px, 7vw, 70px) 0 clamp(60px, 8vw, 100px);
-}
-
-.form-card {
-  max-width: 640px;
-  margin: 0 auto;
-  background: var(--paper);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-card);
-  padding: clamp(24px, 5vw, 44px);
-}
-
-.form-card h1 {
-  font-size: clamp(1.5rem, 3.6vw, 2rem);
-  color: var(--leaf-dark);
-  margin-bottom: 6px;
-}
-
-.form-card > p.sub {
-  color: #5a5748;
-  margin-bottom: 26px;
-  font-size: 0.95rem;
-}
-
-.field {
-  margin-bottom: 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.field label {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--leaf-dark);
-}
-
-.field input,
-.field select {
-  width: 100%;
-  padding: 13px 14px;
-  border-radius: 12px;
-  border: 1.5px solid #dcd3ba;
-  background: var(--cream);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
   font-family: var(--font-body);
-  font-size: 0.98rem;
-  color: var(--ink);
-  transition: border-color 0.2s ease, background 0.2s ease;
+  flex: 1;
+  min-width: 220px;
+  padding: 18px 30px;
+  font-size: 1rem;
 }
 
-.field input:focus,
-.field select:focus {
-  border-color: var(--turmeric);
-  background: var(--paper);
-  outline: none;
-}
-
-.field-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
-@media (max-width: 520px) {
-  .field-row { grid-template-columns: 1fr; }
-}
-
-/* Food multi-select dropdown */
-.select-wrap { position: relative; }
-
-.select-btn {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 50px;
-  padding: 0 16px;
-  border-radius: 12px;
-  cursor: pointer;
-  background: var(--cream);
-  border: 1.5px solid #dcd3ba;
-}
-
-.select-btn .btn-text { font-size: 0.98rem; color: var(--ink); }
-
-.select-btn .arrow-dwn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: var(--leaf);
+.option-btn:hover {
+  background: var(--turmeric-dark);
   color: var(--paper);
-  font-size: 0.75rem;
-  transition: transform 0.25s ease;
 }
 
-.select-btn.open .arrow-dwn { transform: rotate(180deg); }
-
-.list-items {
-  list-style: none;
-  margin-top: 8px;
-  border-radius: 12px;
-  padding: 10px;
-  background: var(--paper);
-  box-shadow: var(--shadow-card);
-  max-height: 0;
-  overflow: hidden auto;
-  transition: max-height 0.3s ease;
-  border: 1px solid #ece3cb;
+@media (max-width: 480px) {
+  .option-actions {
+    flex-direction: column;
+  }
+  .option-btn {
+    width: 100%;
+  }
 }
-
-.list-items.open { max-height: 340px; }
-
-.list-items .item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 10px;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background 0.15s ease;
-}
-
-.list-items .item:hover { background: var(--cream-2); }
-
-.item .checkbox {
-  flex: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
-  border-radius: 5px;
-  border: 1.5px solid #c9bfa2;
-  transition: all 0.2s ease;
-}
-
-.item.checked .checkbox { background: var(--leaf); border-color: var(--leaf); }
-.item .check-icon { color: var(--paper); font-size: 11px; transform: scale(0); transition: transform 0.15s ease; }
-.item.checked .check-icon { transform: scale(1); }
-
-.item .item-text { font-size: 0.95rem; color: var(--ink); }
-
-.helper-text { font-size: 0.8rem; color: #7a7869; margin-top: 6px; }
-
-/* Steps indicator (order page) */
-.steps {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 26px;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  color: var(--leaf-light);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-.steps span { padding: 4px 10px; border-radius: 999px; background: var(--cream-2); }
-.steps span.active { background: var(--turmeric); color: var(--ink); }
-
-/* Utility */
-.center { text-align: center; }
-.small-note { font-size: 0.82rem; color: #7a7869; text-align: center; margin-top: 16px; } 
-
-
-  h1{
-        margin-left: 630px;
-        font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-    }
-   @media screen and (max-width:325px) {
-      h1{
-        margin-left: 65px;
-      }
-      .btn btn-btn-primary{
-        margin-right: -100px;
-      }
-   }
 </style>
 <body>
 
   <nav class="site-nav">
-  <div class="wrap">
-    <a href="index.html" class="brand">
-      <img src="prince_online_canteen_youtube_logo.png" alt="">
-      Prince Online Canteen
-    </a>
-    <button class="nav-toggle" aria-label="Toggle menu">&#9776;</button>
-    <div class="nav-links">
-      <a href="index.html">HOME</a>
-      <a href="about.html">About</a>
-      <a href="METHORDE.html" class="cta">Order now</a>
+    <div class="wrap">
+      <a href="index.html" class="brand">
+        <img src="prince_online_canteen_youtube_logo.png" alt="Logo">
+        Prince Online Canteen
+      </a>
+      <button class="nav-toggle" aria-label="Toggle menu">&#9776;</button>
+      <div class="nav-links">
+        <a href="index.html">HOME</a>
+        <a href="about.html">About</a>
+        <a href="METHORDE.html" class="cta">Order now</a>
+      </div>
     </div>
-  </div>
-</nav>
+  </nav>
 
-    <h1>Select Option</h1>
-    <a class="btn btn-btn-primary"  style="margin-top: 100px;margin-left: 370px;background: var(--font-display);box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);" href="card payment.html" id="k">CARD PAYMENT</a>
-    <a class="btn btn-btn-primary" style="margin-top: 100px;margin-left: 300px;position: relative; background: var(--font-display);box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);" href="oder.html" id="btna">CASH PAYMENT</a>
+  <main class="option-selection">
+    <h1 class="option-title">Select Option</h1>
+    <div class="option-actions">
+      <a class="btn option-btn" href="card payment.html" id="k">CARD PAYMENT</a>
+      <a class="btn option-btn" href="oder.html" id="btna">CASH PAYMENT</a>
+    </div>
+  </main>
+
+  <script>
+    // Hamburger Menu Functionality
+    const navToggle = document.querySelector('.nav-toggle');
+    const navLinks = document.querySelector('.nav-links');
+
+    navToggle.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+    });
+  </script>
 </body>
 </html>
