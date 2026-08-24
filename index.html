@@ -644,6 +644,196 @@ select:focus-visible, .item:focus-visible {
 #cart-count.bump {
   transform: scale(1.3);
 }
+h1, h2, h3, .display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.2px;
+}
+
+.wrap {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 40px);
+  width: 100%;
+}
+
+/* focus visibility */
+a:focus-visible, button:focus-visible, input:focus-visible,
+select:focus-visible, .item:focus-visible {
+  outline: 3px solid var(--turmeric);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* NAV */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--leaf);
+  color: var(--paper);
+  box-shadow: var(--shadow-soft);
+}
+
+.site-nav .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 2.4vw, 1.4rem);
+  color: var(--paper);
+  white-space: nowrap;
+}
+
+.brand img {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 2px solid var(--turmeric);
+  object-fit: cover;
+  background: var(--paper);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-links a {
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.nav-links a:hover { background: rgba(255,255,255,0.1); }
+
+.nav-links a.cta {
+  background: var(--turmeric);
+  color: var(--ink);
+}
+.nav-links a.cta:hover { background: var(--turmeric-dark); }
+
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--paper);
+  font-size: 1.6rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 6px 10px;
+}
+
+@media (max-width: 720px) {
+  .nav-toggle { display: block; }
+  .nav-links {
+    position: absolute;
+    top: 72px;
+    left: 0;
+    right: 0;
+    background: var(--leaf-dark);
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+  .nav-links.open { max-height: 320px; }
+  .nav-links a {
+    border-radius: 0;
+    padding: 16px clamp(16px, 4vw, 40px);
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+}
+
+/* BUTTONS */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.98rem;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
+}
+.btn:active { transform: translateY(1px); }
+
+/* SELECT OPTION SECTION (RESPONSIVE) */
+.option-selection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(40px, 8vw, 80px) 20px;
+  text-align: center;
+}
+
+.option-title {
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-size: clamp(2rem, 6vw, 3.2rem);
+  color: var(--leaf-dark);
+  margin-bottom: 40px;
+  letter-spacing: 1px;
+}
+
+.option-actions {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  max-width: 600px;
+}
+
+.option-btn {
+  background: var(--turmeric);
+  color: var(--ink);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  font-family: var(--font-body);
+  flex: 1;
+  min-width: 220px;
+  padding: 18px 30px;
+  font-size: 1rem;
+}
+
+.option-btn:hover {
+  background: var(--turmeric-dark);
+  color: var(--paper);
+}
+
+@media (max-width: 480px) {
+  .option-actions {
+    flex-direction: column;
+  }
+  .option-btn {
+    width: 100%;
+  }
+}
   
 
 </style>
@@ -679,7 +869,7 @@ select:focus-visible, .item:focus-visible {
         <a href="about.html" class="btn btn-ghost">ABOUT</a>
       </div>
     </div>
-    <video autoplay src="/video/Screen Recording 2026-07-24 at 21.37.59.mp4" class="hero-art" style="width: 500px;box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);"></video>
+    <img src="B7E55507-80CC-49A0-B8D8-C423DEBBA0E6.jpeg" class="hero-art" style="width: 500px;box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);">
   </div>
 </header>
 
@@ -954,6 +1144,13 @@ function gotowhatsapp() {
   const url = "https://wa.me/94711815673?text=" + encodeURIComponent(message);
   window.open(url, "_blank");
 }
+ // Hamburger Menu Functionality
+    const navToggle = document.querySelector('.nav-toggle');
+    const navLinks = document.querySelector('.nav-links');
+
+    navToggle.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+    });
 
 </script>
 </body>
