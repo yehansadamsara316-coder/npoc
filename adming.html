@@ -318,6 +318,54 @@
                 loadOrders();
             }
         }
+        // 1. Supabase Client එක Initialize කිරීම
+    const SUPABASE_URL = 'https://azzwynmjuuuxwyflujjo.supabase.co/rest/v1/';
+    const SUPABASE_ANON_KEY = 'sb_publishable_KNa1UDWQTQ9qtkcGGDrIdQ_hLPNVXoe';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // 2. Database එකෙන් Data ලබාගැනීම (Read)
+    async function fetchData() {
+      const { data, error } = await supabase
+        .from('messages') // ඔයාගේ Table එකේ නම
+        .select('*');
+
+      if (error) {
+        console.error('Data ලබාගැනීමේ දෝෂයක්:', error);
+        return;
+      }
+
+      const list = document.getElementById('dataList');
+      list.innerHTML = '';
+      data.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item.content;
+        list.appendChild(li);
+      });
+    }
+
+    // 3. Database එකට Data ඇතුළත් කිරීම (Insert)
+    async function addData() {
+      const input = document.getElementById('userInput');
+      const text = input.value;
+
+      if (!text) return;
+
+      const { data, error } = await supabase
+        .from('messages')
+        .insert([{ content: text }]);
+
+      if (error) {
+        console.error('Data ඇතුළත් කිරීමේ දෝෂයක්:', error);
+        alert('Save කිරීමට නොහැකි විය. RLS Rules පරික්ෂා කරන්න!');
+      } else {
+        input.value = '';
+        fetchData(); // Data එකතු කළ පසු List එක Update කිරීම
+      }
+    }
+
+    // Page එක Load වන විටම Data ලබාගැනීම
+    fetchData();
+        
 
         setInterval(loadOrders, 5000);
         loadOrders();
