@@ -8,6 +8,7 @@
         id="bootstrap-css" />
         <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
         <link rel="icon" href="prince_online_canteen_youtube_logo.png">
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
        /* =========================================================
    PRINCE ONLINE CANTEEN — design tokens
@@ -732,26 +733,31 @@ select:focus-visible, .item:focus-visible {
                 return;
             }
 
-            // Save Order to Local Storage for Admin Panel
-            var newOrder = {
-                id: Date.now(),
-                name: name,
-                phone: phone,
-                time: time,
-                methord: methord,
-                grade: grade,
-                foods: foods,
-                totalCash: totalCash,
-                status: "Pending",
-                date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-            };
+    async function submitOrderToSupabase(orderData) {
+  const { data, error } = await _supabase
+    .from('canteen_orders')
+    .insert([
+      {
+        name: orderData.name,
+        phone: orderData.phone,
+        time: orderData.time,
+        methord: orderData.methord,
+        grade: orderData.grade,
+        foods: orderData.foods,
+        totalCash: orderData.totalCash,
+        status: 'Pending'
+      }
+    ]);
 
-            var orders = JSON.parse(localStorage.getItem("canteenOrders")) || [];
-            orders.push(newOrder);
-            localStorage.setItem("canteenOrders", JSON.stringify(orders));
+  if (error) {
+    alert('Order එක යැවීමට නොහැකි විය: ' + error.message);
+  } else {
+    alert('Order එක සාර්ථකව Database එකට ඇතුළත් විය!');
+  }
+}
 
             // Open WhatsApp
-            var url = "https://wa.me/94711816576?text=" 
+            var url = "https://wa.m/?text=" 
                 + "Name: " + encodeURIComponent(name) + "%0a"
                 + "Phone: " + encodeURIComponent(phone) + "%0a"
                 + "Time: " + encodeURIComponent(time) + "%0a"
@@ -761,7 +767,30 @@ select:focus-visible, .item:focus-visible {
                 + "Total Cash: " + encodeURIComponent(totalCash);
 
             window.open(url, '_blank').focus();
+
+            // Success alert message
+            alert("Your order was placed successfully!");
+
+            // Reset form fields
+            document.querySelector("form").reset();
+
+            // Uncheck selected food items
+            document.querySelectorAll(".item.checked").forEach(function(item) {
+                item.classList.remove("checked");
+            });
+
+            // Reset selected button text
+            var btnText = document.querySelector(".btn-text");
+            if (btnText) {
+                btnText.innerText = "SELECT FOODS";
+            }
+
+            // Reset total cash display
+            if (totalCashDisplay) {
+                totalCashDisplay.innerText = "LKR 0.00";
+            }
         }
+        
         
     </script>
 </body>
