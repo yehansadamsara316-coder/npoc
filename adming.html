@@ -10,6 +10,13 @@
     
     <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- EmailJS Library -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script type="text/javascript">
+   (function(){
+      emailjs.init("7uid9iRfJ5yZKmZm_"); // EmailJS එකෙන් ලැබුණු Public Key එක මෙතැනට දාන්න
+   })();
+</script>
     
     <style>
         :root {
@@ -104,30 +111,34 @@
         </div>
 
         <!-- ALL ORDERS TABLE -->
-        <div class="section-box" style="border-top: 5px solid #28a745;">
-            <h4 class="text-success"><i class="fas fa-utensils"></i> All Canteen Orders (ලැබුණු සියලු Orders)</h4>
-            <div class="table-responsive">
-                <table class="table table-hover mt-3">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th>Time</th>
-                            <th>Name</th>
-                            <th>Role/Grade</th>
-                            <th>Phone</th>
-                            <th>Ordered Foods</th>
-                            <th>Total Price</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="all-orders-body">
-                        <tr>
-                            <td colspan="8" class="text-center">Loading Data from Supabase...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+       <!-- ALL ORDERS TABLE -->
+<div class="section-box" style="border-top: 5px solid #28a745;">
+    <h4 class="text-success"><i class="fas fa-utensils"></i> All Canteen Orders (ලැබුණු සියලු Orders)</h4>
+    <div class="table-responsive">
+        <table class="table table-hover mt-3">
+            <thead class="thead-dark">
+    <tr>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Photo</th> <!-- Photo column -->
+        <th>Name</th>
+        <th>Role/Grade</th>
+        <th>Phone</th>
+        <th>Ordered Foods</th>
+        <th>Total Price</th>
+        <th>Status</th>
+        <th>Actions</th>
+    </tr>
+</thead>
+            <tbody id="all-orders-body">
+                <tr>
+                    <td colspan="9" class="text-center">Loading Data from Supabase...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+        
 
     </div>
 
@@ -215,7 +226,85 @@
             } else {
                 fetchOrders(); // Refresh table
             }
+            // Order එක Complete කිරීම සහ VIWA SMS එකක් යැවීම
+async function markCompleted(orderId, customerPhone, customerName) {
+    if (!confirm("මෙම Order එක Completed ලෙස Mark කිරීමට සහ Customer ට SMS එකක් යැවීමට අවශ්‍යද?")) {
+        return;
+    }
+
+    try {
+        // 1. Supabase Database එකේ Status එක 'Completed' ලෙස වෙනස් කිරීම
+        const { data, error } = await _supabase
+            .from('canteen_orders')
+            .update({ status: 'Completed' })
+            .eq('id', orderId);
+
+        if (error) {
+            alert("Status වෙනස් කිරීමට නොහැකි විය: " + error.message);
+            return;
         }
+
+        // 2. Customer ට VIWA SMS එක යැවීම
+        if (customerPhone) {
+            await sendViwaSMS(customerPhone, customerName);
+        }
+
+        alert("Order එක Completed කරන ලදී! SMS එක යවන ලදී.");
+        fetchOrders(); // Admin Table එක Refresh කිරීම
+
+    } catch (err) {
+        console.error("Error:", err);
+        alert("දෝෂයක් සිදු විය: " + err.message);
+    }
+}
+
+// VIWA SMS API එක Call කරන Function එක
+async function sendViwaSMS(phone, name) {
+    // VIWA SMS API credentials (ඔබගේ VIWA Dashboard එකෙන් ලැබෙන විස්තර ඇතුළත් කරන්න)
+    const apiKey = "YOUR_VIWA_API_KEY"; // ඔබේ API Key එක
+    const senderId = "YOUR_SENDER_ID"; // ඔබේ Sender ID (උදා: CANTEEN)
+    
+    // Phone number එකේ මුලට 94 එකතු කිරීම (ලංකාවේ 07XXXXXXXX අංක සඳහා)
+    let formattedPhone = phone.trim();
+    if (formattedPhone.startsWith("0")) {
+        formattedPhone = "94" + formattedPhone.substring(1);
+    }
+
+    // Customer ට යන SMS පණිවිඩය
+    const message = `Hi ${name || 'Customer'}, Oba ge Canteen Order eka dan Ready! Karunakara Canteen eken laba ganna. Stuthii!`;
+
+    // VIWA SMS API Endpoint (HTTP API)
+    const viwaUrl = `https://mysms.viwa.lk/api/v3/sms/send`; 
+
+    try {
+        const response = await fetch(viwaUrl, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${apiKey}`,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                recipient: formattedPhone,
+                sender_id: senderId,
+                message: message
+            })
+        });
+
+        const resData = await response.json();
+        console.log("SMS Response:", resData);
+    } catch (smsError) {
+        console.error("SMS Sending Failed:", smsError);
+        // SMS එක නොගියත් Database status වෙනස් වී ඇති නිසා User ට alert එකක් පෙන්වනු ඇත
+    }
+}
+        }
+        // Complete button එක සාදන ස්ථානය පහත පරිදි වෙනස් කරන්න:
+const completeBtn = order.status !== 'Completed' 
+    ? `<button class="btn btn-sm btn-success mr-1" onclick="markCompleted('${order.id}', '${order.phone}', '${order.name}', '${order.email}', '${order.totalCash}')">
+        <i class="fas fa-check"></i> Complete
+       </button>` 
+    : '';
 
         // Delete Single Order Function
         async function deleteOrder(orderId) {
@@ -248,6 +337,137 @@
                 fetchOrders();
             }
         }
+        async function fetchOrders() {
+    const tbody = document.getElementById('all-orders-body');
+    
+    const { data, error } = await _supabase
+        .from('canteen_orders')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+    if (error) {
+        console.error("Error fetching orders:", error);
+        tbody.innerHTML = `<tr><td colspan="9" class="text-danger text-center">Error loading orders: ${error.message}</td></tr>`;
+        return;
+    }
+
+    if (!data || data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" class="text-center">කිසිදු Order එකක් හමුවූයේ නැත.</td></tr>`;
+        updateAnalytics([]);
+        return;
+    }
+
+    let html = '';
+    data.forEach(order => {
+        const statusBadge = order.status === 'Completed' 
+            ? `<span class="badge-completed">Completed</span>`
+            : `<span class="badge-pending">Pending</span>`;
+
+        // Automatically formatted date fallback to created_at if order_date is null
+        const displayDate = order.order_date || (order.created_at ? order.created_at.split('T')[0] : 'N/A');
+
+        html += `
+            <tr>
+                <td><span class="badge badge-secondary">${displayDate}</span></td> <!-- Displays Date -->
+                <td><b>${order.time || 'N/A'}</b></td>
+                <td>${order.name || '-'}</td>
+                <td><span class="badge badge-info">${order.methord || ''}</span> ${order.grade || ''}</td>
+                <td>${order.phone || '-'}</td>
+                <td>${order.foods || '-'}</td>
+                <td class="text-success font-weight-bold">${order.totalCash || 'LKR 0.00'}</td>
+                <td>${statusBadge}</td>
+                <td>
+                    ${order.status !== 'Completed' ? `<button class="btn btn-sm btn-success mr-1" onclick="markCompleted('${order.id}')"><i class="fas fa-check"></i> Complete</button>` : ''}
+                    <button class="btn btn-sm btn-danger" onclick="deleteOrder('${order.id}')"><i class="fas fa-trash"></i> Delete</button>
+                </td>
+            </tr>
+        `;
+    });
+
+    tbody.innerHTML = html;
+    updateAnalytics(data);
+}
+data.forEach(order => {
+    const statusBadge = order.status === 'Completed' 
+        ? `<span class="badge-completed">Completed</span>`
+        : `<span class="badge-pending">Pending</span>`;
+
+    const displayDate = order.order_date || (order.created_at ? order.created_at.split('T')[0] : 'N/A');
+
+    // Profile photo preview
+    const photoHtml = order.photo_url 
+        ? `<a href="${order.photo_url}" target="_blank"><img src="${order.photo_url}" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid #2f5233;" /></a>`
+        : `<span class="badge badge-secondary">No Photo</span>`;
+
+    html += `
+        <tr>
+            <td><span class="badge badge-secondary">${displayDate}</span></td>
+            <td><b>${order.time || 'N/A'}</b></td>
+            <td>${photoHtml}</td> <!-- Photo cell -->
+            <td>${order.name || '-'}</td>
+            <td><span class="badge badge-info">${order.methord || ''}</span> ${order.grade || ''}</td>
+            <td>${order.phone || '-'}</td>
+            <td>${order.foods || '-'}</td>
+            <td class="text-success font-weight-bold">${order.totalCash || 'LKR 0.00'}</td>
+            <td>${statusBadge}</td>
+            <td>
+                ${order.status !== 'Completed' ? `<button class="btn btn-sm btn-success mr-1" onclick="markCompleted('${order.id}')"><i class="fas fa-check"></i> Complete</button>` : ''}
+                <button class="btn btn-sm btn-danger" onclick="deleteOrder('${order.id}')"><i class="fas fa-trash"></i> Delete</button>
+            </td>
+        </tr>
+    `;
+});
+// Order එක Complete කරද්දී Email එක යැවීමේ Function එක
+async function markCompleted(orderId, customerPhone, customerName, customerEmail, totalCash) {
+    if (!confirm("මෙම Order එක Completed ලෙස Mark කිරීමට සහ Customer ට Email එකක් යැවීමට අවශ්‍යද?")) {
+        return;
+    }
+
+    try {
+        // 1. Supabase Database එකෙහි Status එක Completed කිරීම
+        const { data, error } = await _supabase
+            .from('canteen_orders')
+            .update({ status: 'Completed' })
+            .eq('id', orderId);
+
+        if (error) {
+            alert("Status වෙනස් කිරීමට නොහැකි විය: " + error.message);
+            return;
+        }
+
+        // 2. Email එකක් යැවීම (Customer Email එකක් තිබේ නම්)
+        if (customerEmail && customerEmail !== 'undefined' && customerEmail !== '') {
+            sendEmailNotification(customerName, customerEmail, orderId, totalCash);
+        }
+
+        alert("Order එක Completed කරන ලදී! Email එක යවන ලදී.");
+        fetchOrders(); // Admin Table එක Refresh කිරීම
+
+    } catch (err) {
+        console.error("Error:", err);
+        alert("දෝෂයක් සිදු විය: " + err.message);
+    }
+}
+
+// EmailJS හරහා Automatic Email යැවීම
+function sendEmailNotification(name, email, orderId, totalCash) {
+    const serviceID = "service_diqiuh2";   // EmailJS Service ID එක
+    const templateID = "template_ha9652i"; // EmailJS Template ID එක
+
+    const templateParams = {
+        to_name: name || 'Customer',
+        to_email: email,
+        order_id: orderId,
+        total_cash: totalCash
+    };
+
+    emailjs.send(serviceID, templateID, templateParams)
+        .then(function(response) {
+            console.log('EMAIL SUCCESS!', response.status, response.text);
+        }, function(error) {
+            console.error('EMAIL FAILED...', error);
+        });
+}
 
         // Realtime Subscription (නැවත Refresh නොකර කෙළින්ම Data Update වීමට)
         _supabase

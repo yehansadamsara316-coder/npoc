@@ -242,6 +242,56 @@ async function deleteOrder(id) {
         fetchData(); // Data එකතු කළ පසු List එක Update කිරීම
       }
     }
+    async function fetchOrders() {
+    const tbody = document.getElementById('all-orders-body');
+    
+    const { data, error } = await _supabase
+        .from('canteen_orders')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+    if (error) {
+        console.error("Error fetching orders:", error);
+        tbody.innerHTML = `<tr><td colspan="9" class="text-danger text-center">Error loading orders: ${error.message}</td></tr>`;
+        return;
+    }
+
+    if (!data || data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" class="text-center">කිසිදු Order එකක් හමුවූයේ නැත.</td></tr>`;
+        updateAnalytics([]);
+        return;
+    }
+
+    let html = '';
+    data.forEach(order => {
+        const statusBadge = order.status === 'Completed' 
+            ? `<span class="badge-completed">Completed</span>`
+            : `<span class="badge-pending">Pending</span>`;
+
+        // Automatically formatted date fallback to created_at if order_date is null
+        const displayDate = order.order_date || (order.created_at ? order.created_at.split('T')[0] : 'N/A');
+
+        html += `
+            <tr>
+                <td><span class="badge badge-secondary">${displayDate}</span></td> <!-- Displays Date -->
+                <td><b>${order.time || 'N/A'}</b></td>
+                <td>${order.name || '-'}</td>
+                <td><span class="badge badge-info">${order.methord || ''}</span> ${order.grade || ''}</td>
+                <td>${order.phone || '-'}</td>
+                <td>${order.foods || '-'}</td>
+                <td class="text-success font-weight-bold">${order.totalCash || 'LKR 0.00'}</td>
+                <td>${statusBadge}</td>
+                <td>
+                    ${order.status !== 'Completed' ? `<button class="btn btn-sm btn-success mr-1" onclick="markCompleted('${order.id}')"><i class="fas fa-check"></i> Complete</button>` : ''}
+                    <button class="btn btn-sm btn-danger" onclick="deleteOrder('${order.id}')"><i class="fas fa-trash"></i> Delete</button>
+                </td>
+            </tr>
+        `;
+    });
+
+    tbody.innerHTML = html;
+    updateAnalytics(data);
+}
 
     // Page එක Load වන විටම Data ලබාගැනීම
     fetchData();

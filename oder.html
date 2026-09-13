@@ -493,6 +493,10 @@ select:focus-visible, .item:focus-visible {
                                        <option value="MIUSIC">MIUSIC ROOM</option>
                                        <option value="DANCING">DANCING ROOM</option>
      </select>
+     <div class="form-group">
+    <label style="color: white; font-weight: bold;">Email Address *</label>
+    <input type="email" id="email" class="form-control" placeholder="example@gmail.com" required />
+</div>
      <div class="container">
          <div class="select-btn open">
            <span class="btn-text">SELECT FOODS</span>
@@ -749,31 +753,13 @@ select:focus-visible, .item:focus-visible {
                     .select();
 
                 if (error) {
-                    alert("Order එක Supabase වෙත යැවීමට නොහැකි විය: " + error.message);
+                    alert("Order එක admin වෙත යැවීමට නොහැකි විය check your conection: " + error.message);
                     subBtn.disabled = false;
                     subBtn.value = "Submit Order";
                     return;
                 }
 
                 alert("ඔබගේ Order එක සාර්ථකව Canteen එක වෙත යවන ලදී!");
-
-                // 2. Open WhatsApp Message
-                var url = "https://wa.me/?text=" 
-                    + "Name: " + encodeURIComponent(name) + "%0a"
-                    + "Phone: " + encodeURIComponent(phone) + "%0a"
-                    + "Time: " + encodeURIComponent(time) + "%0a"
-                    + "Method: " + encodeURIComponent(methord) + "%0a"
-                    + "Grade/Place: " + encodeURIComponent(grade) + "%0a"
-                    + "Foods: " + encodeURIComponent(foods) + "%0a"
-                    + "Total Cash: " + encodeURIComponent(totalCash);
-
-                window.open(url, '_blank').focus();
-
-                // 3. Reset form
-                document.querySelector("form").reset();
-                document.querySelectorAll(".item.checked").forEach(function(item) {
-                    item.classList.remove("checked");
-                });
 
                 var btnText = document.querySelector(".btn-text");
                 if (btnText) {
@@ -782,6 +768,101 @@ select:focus-visible, .item:focus-visible {
                 if (totalCashDisplay) {
                     totalCashDisplay.innerText = "LKR 0.00";
                 }
+                async function submitOrder() {
+    var name = document.getElementById("name").value;
+    var phone = document.getElementById("phone").value;
+    var time = document.getElementById("time").value;
+    var checkedItems = document.querySelectorAll(".item.checked .item-text");
+    var foods = Array.from(checkedItems).map(el => el.innerText).join(", ");
+    var methord = document.getElementById("methord").value;
+    var grade = document.getElementById("grade").value;
+    var totalCash = document.getElementById("total-cash").innerText;
+    var subBtn = document.getElementById("sub");
+    var photoInput = document.getElementById("userPhoto");
+     var email = document.getElementById("email").value;
+
+    // LocalStorage එකෙන් කලින් Save කරපු Photo URL එකක් තියෙනවාදැයි බැලීම
+    let savedPhotoUrl = localStorage.getItem("canteen_user_photo");
+
+    if (!name || !phone || checkedItems.length === 0 || !grade) {
+        alert("කරුණාකර සියලු විස්තර, Grade/Place සහ ආහාර තෝරන්න!");
+        return;
+    }
+
+    // Photo එකක් නැත්නම් පහත පණිවිඩය පෙන්වයි
+    if (!savedPhotoUrl && photoInput.files.length === 0) {
+        alert("කරුණාකර ඔබගේ ඡායාරූපයක් (Photo) ඇතුළත් කරන්න!");
+        return;
+    }
+
+    subBtn.disabled = true;
+    subBtn.value = "Processing...";
+
+    try {
+        // 1. Photo එකක් Upload වෙනවා නම් Supabase Storage එකට Upload කිරීම
+        if (photoInput.files.length > 0) {
+            const file = photoInput.files[0];
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${phone}_${Date.now()}.${fileExt}`;
+
+            const { data: uploadData, error: uploadError } = await _supabase.storage
+                .from('user-profiles') // Supabase Storage Bucket එකේ නම
+                .upload(fileName, file);
+
+            if (uploadError) {
+                alert("Photo Upload කිරීමට නොහැකි විය: " + uploadError.message);
+                subBtn.disabled = false;
+                subBtn.value = "Submit Order";
+                return;
+            }
+
+            // Public URL එක ලබා ගැනීම
+            const { data: urlData } = _supabase.storage
+                .from('user-profiles')
+                .getPublicUrl(fileName);
+
+            savedPhotoUrl = urlData.publicUrl;
+            localStorage.setItem("canteen_user_photo", savedPhotoUrl);
+        }
+
+        // 2. Database එකට Order එක සේව් කිරීම (WhatsApp එකට යන්නේ නැත)
+        const { data, error } = await _supabase
+            .from('canteen_orders')
+            .insert([{
+                name: name,
+                phone: phone,
+                time: time,
+                methord: methord,
+                grade: grade,
+                foods: foods,
+                totalCash: totalCash,
+                photo_url: savedPhotoUrl,
+                status: 'Pending'
+            }])
+            .select();
+
+        if (error) {
+            alert("Order එක යැවීමට නොහැකි විය: " + error.message);
+            subBtn.disabled = false;
+            subBtn.value = "Submit Order";
+            return;
+        }
+
+        // සාර්ථකව සේව් වූ පසු පණිවිඩය පෙන්වා Form එක reset කිරීම
+        alert("ඔබගේ Order එක සාර්ථකව Canteen එක වෙත යවන ලදී!");
+        
+        // Form එක clear කිරීමට අවශ්‍ය නම්:
+        document.getElementById("name").value = "";
+        document.getElementById("phone").value = "";
+
+    } catch (err) {
+        console.error("Submission Error:", err);
+        alert("යම් දෝෂයක් සිදු විය, නැවත උත්සාහ කරන්න.");
+    } finally {
+        subBtn.disabled = false;
+        subBtn.value = "Submit Order";
+    }
+}
 
             } catch (err) {
                 console.error("Submission Error:", err);
