@@ -196,29 +196,8 @@ async function deleteOrder(id) {
             document.getElementById("total-income").innerText = "LKR " + totalIncome.toFixed(2);
         
 
-        function markComplete(id) {
-            var orders = JSON.parse(localStorage.getItem("canteenOrders")) || [];
-            orders = orders.map(order => {
-                if(order.id === id) order.status = "Completed";
-                return order;
-            });
-            localStorage.setItem("canteenOrders", JSON.stringify(orders));
-            loadOrders();
-        }
-
-        function deleteOrder(id) {
-            var orders = JSON.parse(localStorage.getItem("canteenOrders")) || [];
-            orders = orders.filter(order => order.id !== id);
-            localStorage.setItem("canteenOrders", JSON.stringify(orders));
-            loadOrders();
-        }
-
-        function clearAllOrders() {
-            if(confirm("ඔබට සියලුම Orders ඉවත් කිරීමට අවශ්‍යද?")) {
-                localStorage.removeItem("canteenOrders");
-                loadOrders();
-            }
-        }
+    
+         
         // 1. Supabase Client එක Initialize කිරීම
     const SUPABASE_URL = 'https://azzwynmjuuuxwyflujjo.supabase.co/rest/v1/';
     const SUPABASE_ANON_KEY = 'sb_publishable_KNa1UDWQTQ9qtkcGGDrIdQ_hLPNVXoe';

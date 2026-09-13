@@ -591,16 +591,16 @@ select:focus-visible, .item:focus-visible {
     margin-left: -50px;
   }  
   .site-nav{
-    width: 435px;
+    width: 320px;
   }
   .hero{
-    width: 435px;
+    width: 320px;
   }
   .section{
-    width: 435px;  
+    width: 320px;  
   }
   .site-footer{
-    width: 435px;
+    width: 320px;
   }
 }
 @media  screen and (max-width:430px) {
@@ -608,16 +608,36 @@ select:focus-visible, .item:focus-visible {
     margin-left: -50px;
   }  
   .site-nav{
-    width: 435px;
+    width: 320px;
   }
   .hero{
-    width: 435px;
+    width: 320px;
   }
   .section{
-    width: 435px;  
+    width: 320px;  
   }
   .site-footer{
-    width: 435px;
+    width: 320px;
+  }
+  .body{
+    width: -520px;
+  }
+}
+@media screen and (max-width:770px) {
+    .npoc{
+    margin-left: -50px;
+  }  
+  .site-nav{
+    width: 710.5px;
+  }
+  .hero{
+    width: 710px;
+  }
+  .section{
+    width: 710px;  
+  }
+  .site-footer{
+    width: 710px;
   }
 }
 /* Badge styling for cart icon */
@@ -743,7 +763,7 @@ select:focus-visible, .item:focus-visible {
   padding: 6px 10px;
 }
 
-@media (max-width: 720px) {
+@media (max-width: 770px) {
   .nav-toggle { display: block; }
   .nav-links {
     position: absolute;
@@ -866,7 +886,7 @@ select:focus-visible, .item:focus-visible {
       <p>Browse today's rice, short eats and juices, pick what you want, and send your order straight to the canteen on WhatsApp — ready when you get there.</p>
       <div class="hero-actions">
         <a href="METHORDE.html" class="btn btn-primary"><i class="fa-solid fa-cart-shopping"></i> Order now</a>
-        <a href="about.html" class="btn btn-ghost">ABOUT</a>
+        <a href="about.html" class="btn btn-btn-ghost">ABOUT</a>
       </div>
     </div>
     <img src="B7E55507-80CC-49A0-B8D8-C423DEBBA0E6.jpeg" class="hero-art" style="width: 500px;box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);">
@@ -1144,6 +1164,7 @@ function gotowhatsapp() {
   const url = "https://wa.me/94711815673?text=" + encodeURIComponent(message);
   window.open(url, "_blank");
 }
+
  // Hamburger Menu Functionality
     const navToggle = document.querySelector('.nav-toggle');
     const navLinks = document.querySelector('.nav-links');

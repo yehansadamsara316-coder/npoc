@@ -16,6 +16,7 @@
 
 <!-- 3. ඔයාගේ Main Admin/Order Logic Code එක -->
 <script src="js/adming.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
        /* =========================================================
    PRINCE ONLINE CANTEEN — design tokens
@@ -740,27 +741,29 @@ select:focus-visible, .item:focus-visible {
                 return;
             }
 
-    async function submitOrderToSupabase(orderData) {
-  const { data, error } = await _supabase
-    .from('canteen_orders')
-    .insert([
-      {
-        name: orderData.name,
-        phone: orderData.phone,
-        time: orderData.time,
-        methord: orderData.methord,
-        grade: orderData.grade,
-        foods: orderData.foods,
-        totalCash: orderData.totalCash,
-        status: 'Pending'
-      }
-    ]);
+ const SUPABASE_URL = 'https://azzwynmjuuuxwyflujjo.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_KNa1UDWQTQ9qtkcGGDrIdQ_hLPNVXoe';
+const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  if (error) {
-    alert('Order එක යැවීමට නොහැකි විය: ' + error.message);
-  } else {
-    alert('Order එක සාර්ථකව Database එකට ඇතුළත් විය!');
-  }
+async function submitOrder(orderData) {
+    const { data, error } = await _supabase
+        .from('canteen_orders')
+        .insert([{
+            name: orderData.name,
+            phone: orderData.phone,
+            time: orderData.time,
+            methord: orderData.methord,
+            grade: orderData.grade,
+            foods: orderData.foods,
+            totalCash: orderData.totalCash,
+            status: 'Pending'
+        }]);
+
+    if (error) {
+        alert("Order එක යැවීමට නොහැකි විය: " + error.message);
+    } else {
+        alert("Order එක සාර්ථකව Canteen එකට ලැබුණා!");
+    }
 }
 
             // Open WhatsApp

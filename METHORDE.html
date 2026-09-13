@@ -237,6 +237,11 @@ select:focus-visible, .item:focus-visible {
   color: var(--paper);
 }
 
+.option-btn.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 @media (max-width: 480px) {
   .option-actions {
     flex-direction: column;
@@ -266,7 +271,7 @@ select:focus-visible, .item:focus-visible {
   <main class="option-selection">
     <h1 class="option-title">Select Option</h1>
     <div class="option-actions">
-      <a class="btn option-btn" href="card payment.html" id="k">CARD PAYMENT</a>
+      <a class="btn option-btn" href="notavelable.html" id="k">CARD PAYMENT</a>
       <a class="btn option-btn" href="oder.html" id="btna">CASH PAYMENT</a>
     </div>
   </main>
@@ -278,6 +283,34 @@ select:focus-visible, .item:focus-visible {
 
     navToggle.addEventListener('click', () => {
       navLinks.classList.toggle('open');
+    });
+
+    // Time Restriction Logic (Sri Lanka Time: Asia/Colombo)
+    function isTimeAllowed() {
+      const now = new Date();
+      
+      // Sri Lanka Time zone එකට අදාළ පැය සහ මිනිත්තු ලබා ගැනීම
+      const slTimeString = now.toLocaleString("en-US", { timeZone: "Asia/Colombo", hour12: false });
+      const slDate = new Date(slTimeString);
+
+      const hours = slDate.getHours();
+      const minutes = slDate.getMinutes();
+      const currentDecimalTime = hours + (minutes / 60);
+
+      // Unlock Hours: 1.30 PM (13.50) සිට 6.00 AM (6.00) දක්වා
+      // රාත්‍රී 12 පසුවී 6.00 AM දක්වා හෝ ප.ව. 1.30 සිට 11.59 PM දක්වා
+      return (currentDecimalTime < 5.5) || (currentDecimalTime >= 13.5);
+    }
+
+    const optionButtons = document.querySelectorAll('.option-btn');
+
+    optionButtons.forEach(button => {
+      button.addEventListener('click', (event) => {
+        if (!isTimeAllowed()) {
+          event.preventDefault(); // Link එකට යන එක නවත්වනවා
+          alert("කණගාටුයි! මෙම සේවාව ලබා ගත හැක්කේ ප.ව. 1.30 සිට පෙ.ව. 5.30 දක්වා පමණි.");
+        }
+      });
     });
   </script>
 </body>
