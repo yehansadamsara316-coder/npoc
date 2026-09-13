@@ -1,28 +1,20 @@
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ODER.POC</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet"
-        id="bootstrap-css" />
-        <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
-        <link rel="icon" href="prince_online_canteen_youtube_logo.png">
-       <!-- 1. Supabase SDK එක (මේක පළමුව තිබිය යුතුය) -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<!-- 2. ඔයාගේ Supabase Config එක -->
-<script src="js/supabase-config.js"></script>
-
-<!-- 3. ඔයාගේ Main Admin/Order Logic Code එක -->
-<script src="js/adming.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" href="prince_online_canteen_youtube_logo.png">
+    
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <style>
        /* =========================================================
    PRINCE ONLINE CANTEEN — design tokens
-   Palette grounded in a Sri Lankan school canteen:
-   turmeric (fried rice, curry), banana-leaf green, chili red,
-   rice-cream background, charcoal ink.
    ========================================================= */
 :root {
   --turmeric: #e3a021;
@@ -75,7 +67,6 @@ h1, h2, h3, .display {
   padding: 0 clamp(16px, 4vw, 40px);
 }
 
-/* focus visibility */
 a:focus-visible, button:focus-visible, input:focus-visible,
 select:focus-visible, .item:focus-visible {
   outline: 3px solid var(--turmeric);
@@ -91,10 +82,6 @@ select:focus-visible, .item:focus-visible {
   }
 }
 
-/* =========================================================
-   NAV — chalkboard-style menu board, collapses to a
-   hand-drawn "hamburger ticket" on small screens
-   ========================================================= */
 .site-nav {
   position: sticky;
   top: 0;
@@ -167,7 +154,6 @@ select:focus-visible, .item:focus-visible {
     border: none;
 }
 
-/* Responsive section structure without hardcoded offsets */
 .oder {
     padding: 20px 15px;
     width: 100%;
@@ -349,7 +335,6 @@ select:focus-visible, .item:focus-visible {
     transition: all 0.2s ease-in-out;
 }
 
-/* TOTAL CASH STYLING — Made fully responsive */
 .total-cash-box {
     background: white;
     color: #000000;
@@ -384,7 +369,6 @@ select:focus-visible, .item:focus-visible {
   }
 }
 
-/* Responsive Navigation Breakpoint */
 @media (max-width: 720px) {
   .nav-toggle { display: block; }
   .nav-links {
@@ -455,15 +439,15 @@ select:focus-visible, .item:focus-visible {
                                 </div>
                                    <div class="form-group">
                                     <select name="teacher or student" id="methord" class="form-control"
-                                        placeholder="Your Contact Number *" value="" required="" style="border-radius: 10px;font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);">
+                                        required="" style="border-radius: 10px;font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);">
                                         <option value="STUDENT">STUDENT</option>
                                         <option value="TEACHER">TEACHER</option>
                                         <option value="PRINCIPAL">PRINCIPAL</option>
                                     </select>
                                 </div>
      <select type="text" name="Name" id="grade" class="form-control"
-                                        placeholder="Your Name *" value="" required="" style="border-radius: 10px;font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;color:darkorange;box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);">
-     <option value=""></option> 
+                                        required="" style="border-radius: 10px;font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;color:darkorange;box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);">
+     <option value="">SELECT GRADE / PLACE *</option> 
       <option value="3-A">3-A</option>
        <option value="3-B">3-B</option>
         <option value="4-A">4-A</option>
@@ -509,8 +493,8 @@ select:focus-visible, .item:focus-visible {
                                        <option value="MIUSIC">MIUSIC ROOM</option>
                                        <option value="DANCING">DANCING ROOM</option>
      </select>
-     <div class="container" placeholder="YOUR GRADE">
-         <div class="select-btn open" placeholder="YOUR GRADE">
+     <div class="container">
+         <div class="select-btn open">
            <span class="btn-text">SELECT FOODS</span>
            <span class="arrow-dwn"><i class="fa-solid fa-chevron-down"></i></span>
          </div>
@@ -661,14 +645,14 @@ select:focus-visible, .item:focus-visible {
       </li>
      </ul>
 
-     <!-- Added Total Cash Container -->
+     <!-- Total Cash Display -->
      <div class="total-cash-box">
         Total Cash: <span id="total-cash">LKR 0.00</span>
      </div>
      </div>
 
                                 <div class="form-group">
-                                    <input type="button" name="submit" class="btnSubmit btn-block" onclick="gotowhatsapp()" value="Submit" id="sub" style="font-family: serif;"/>
+                                    <input type="button" name="submit" class="btnSubmit btn-block" onclick="gotowhatsapp()" value="Submit Order" id="sub" style="font-family: serif;"/>
                                 </div>
                             </form>
                         </div>
@@ -676,13 +660,17 @@ select:focus-visible, .item:focus-visible {
                 </div>
             </div>
         </div>
-    </div>
     </section>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
     <script>
-        // Navbar toggle logic for mobile screen
+        // Supabase Client Initialization
+        const SUPABASE_URL = 'https://azzwynmjuuuxwyflujjo.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_KNa1UDWQTQ9qtkcGGDrIdQ_hLPNVXoe';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Navbar toggle logic
         const navToggle = document.querySelector('.nav-toggle');
         const navLinks = document.querySelector('.nav-links');
         if (navToggle) {
@@ -714,19 +702,17 @@ select:focus-visible, .item:focus-visible {
               btnText.innerText = "SELECT FOODS";
             }
 
-            // Calculate total price based on data-price attribute
             let total = 0;
             checked.forEach(checkedItem => {
               let price = parseFloat(checkedItem.getAttribute("data-price")) || 0;
               total += price;
             });
 
-            // Update Total Cash Display
             totalCashDisplay.innerText = "LKR " + total.toFixed(2);
            });
         }));
 
-        function gotowhatsapp() {
+        async function gotowhatsapp() {
             var name = document.getElementById("name").value;
             var phone = document.getElementById("phone").value;
             var time = document.getElementById("time").value;
@@ -735,73 +721,76 @@ select:focus-visible, .item:focus-visible {
             var methord = document.getElementById("methord").value;
             var grade = document.getElementById("grade").value;
             var totalCash = document.getElementById("total-cash").innerText;
+            var subBtn = document.getElementById("sub");
 
-            if (!name || !phone || checkedItems.length === 0) {
-                alert("කරුණාකර සියලු විස්තර සහ ආහාර තෝරන්න!");
+            if (!name || !phone || checkedItems.length === 0 || !grade) {
+                alert("කරුණාකර සියලු විස්තර, Grade/Place සහ ආහාර තෝරන්න!");
                 return;
             }
 
- const SUPABASE_URL = 'https://azzwynmjuuuxwyflujjo.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_KNa1UDWQTQ9qtkcGGDrIdQ_hLPNVXoe';
-const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            // Disable button during submission
+            subBtn.disabled = true;
+            subBtn.value = "Sending Order...";
 
-async function submitOrder(orderData) {
-    const { data, error } = await _supabase
-        .from('canteen_orders')
-        .insert([{
-            name: orderData.name,
-            phone: orderData.phone,
-            time: orderData.time,
-            methord: orderData.methord,
-            grade: orderData.grade,
-            foods: orderData.foods,
-            totalCash: orderData.totalCash,
-            status: 'Pending'
-        }]);
+            try {
+                // 1. Insert order to Supabase
+                const { data, error } = await _supabase
+                    .from('canteen_orders')
+                    .insert([{
+                        name: name,
+                        phone: phone,
+                        time: time,
+                        methord: methord,
+                        grade: grade,
+                        foods: foods,
+                        totalCash: totalCash,
+                        status: 'Pending'
+                    }])
+                    .select();
 
-    if (error) {
-        alert("Order එක යැවීමට නොහැකි විය: " + error.message);
-    } else {
-        alert("Order එක සාර්ථකව Canteen එකට ලැබුණා!");
-    }
-}
+                if (error) {
+                    alert("Order එක Supabase වෙත යැවීමට නොහැකි විය: " + error.message);
+                    subBtn.disabled = false;
+                    subBtn.value = "Submit Order";
+                    return;
+                }
 
-            // Open WhatsApp
-            var url = "https://wa.m/?text=" 
-                + "Name: " + encodeURIComponent(name) + "%0a"
-                + "Phone: " + encodeURIComponent(phone) + "%0a"
-                + "Time: " + encodeURIComponent(time) + "%0a"
-                + "Method: " + encodeURIComponent(methord) + "%0a"
-                + "Grade/Place: " + encodeURIComponent(grade) + "%0a"
-                + "Foods: " + encodeURIComponent(foods) + "%0a"
-                + "Total Cash: " + encodeURIComponent(totalCash);
+                alert("ඔබගේ Order එක සාර්ථකව Canteen එක වෙත යවන ලදී!");
 
-            window.open(url, '_blank').focus();
+                // 2. Open WhatsApp Message
+                var url = "https://wa.me/?text=" 
+                    + "Name: " + encodeURIComponent(name) + "%0a"
+                    + "Phone: " + encodeURIComponent(phone) + "%0a"
+                    + "Time: " + encodeURIComponent(time) + "%0a"
+                    + "Method: " + encodeURIComponent(methord) + "%0a"
+                    + "Grade/Place: " + encodeURIComponent(grade) + "%0a"
+                    + "Foods: " + encodeURIComponent(foods) + "%0a"
+                    + "Total Cash: " + encodeURIComponent(totalCash);
 
-            // Success alert message
-            alert("Your order was placed successfully!");
+                window.open(url, '_blank').focus();
 
-            // Reset form fields
-            document.querySelector("form").reset();
+                // 3. Reset form
+                document.querySelector("form").reset();
+                document.querySelectorAll(".item.checked").forEach(function(item) {
+                    item.classList.remove("checked");
+                });
 
-            // Uncheck selected food items
-            document.querySelectorAll(".item.checked").forEach(function(item) {
-                item.classList.remove("checked");
-            });
+                var btnText = document.querySelector(".btn-text");
+                if (btnText) {
+                    btnText.innerText = "SELECT FOODS";
+                }
+                if (totalCashDisplay) {
+                    totalCashDisplay.innerText = "LKR 0.00";
+                }
 
-            // Reset selected button text
-            var btnText = document.querySelector(".btn-text");
-            if (btnText) {
-                btnText.innerText = "SELECT FOODS";
-            }
-
-            // Reset total cash display
-            if (totalCashDisplay) {
-                totalCashDisplay.innerText = "LKR 0.00";
+            } catch (err) {
+                console.error("Submission Error:", err);
+                alert("යම් දෝෂයක් සිදු විය, නැවත උත්සාහ කරන්න.");
+            } finally {
+                subBtn.disabled = false;
+                subBtn.value = "Submit Order";
             }
         }
-        
-        
     </script>
 </body>
 

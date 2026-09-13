@@ -7,14 +7,10 @@
     <link rel="icon" href="prince_online_canteen_youtube_logo.png">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- 1. Supabase SDK එක (මේක පළමුව තිබිය යුතුය) -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<!-- 2. ඔයාගේ Supabase Config එක -->
-<script src="supabase-config.js"></script>
-
-<!-- 3. ඔයාගේ Main Admin/Order Logic Code එක -->
-<script src="adming.js"></script>
+    
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <style>
         :root {
             --leaf: #2f5233;
@@ -65,15 +61,8 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
             margin-top: 20px;
         }
-        .badge-pending { background-color: #ffc107; color: #000; }
-        .badge-completed { background-color: #28a745; color: #fff; }
-        .badge-food-count {
-            background-color: var(--turmeric);
-            color: #000;
-            font-size: 1.1rem;
-            padding: 5px 12px;
-            border-radius: 20px;
-        }
+        .badge-pending { background-color: #ffc107; color: #000; padding: 5px 10px; border-radius: 15px; }
+        .badge-completed { background-color: #28a745; color: #fff; padding: 5px 10px; border-radius: 15px; }
         .btn-clear {
             background-color: var(--chili);
             color: white;
@@ -86,7 +75,10 @@
         <!-- Header -->
         <div class="header-box">
             <h2>Prince Canteen - Admin Dashboard</h2>
-            <button class="btn btn-clear btn-sm" onclick="clearAllOrders()">Clear All Orders</button>
+            <div>
+                <button class="btn btn-light btn-sm mr-2" onclick="fetchOrders()"><i class="fas fa-sync-alt"></i> Refresh Data</button>
+                <button class="btn btn-clear btn-sm" onclick="clearAllOrders()"><i class="fas fa-trash"></i> Clear All Orders</button>
+            </div>
         </div>
 
         <!-- Analytics Cards -->
@@ -111,32 +103,14 @@
             </div>
         </div>
 
-        <!-- FOOD SUMMARY SECTION -->
-        <div class="section-box">
-            <h4 class="text-success"><i class="fas fa-utensils"></i> Today's Pending Food Summary (අද දින කෑම වර්ග අනුව එකතුව)</h4>
-            <div class="table-responsive mt-3">
-                <table class="table table-bordered table-striped">
-                    <thead class="bg-success text-white">
-                        <tr>
-                            <th>Food Item Name (ආහාර වර්ගය)</th>
-                            <th class="text-center" style="width: 200px;">Total Quantity (එකතුව)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="food-summary-body">
-                        <!-- Dynamic Food Summary Data -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- TODAY'S ORDERS TABLE -->
+        <!-- ALL ORDERS TABLE -->
         <div class="section-box" style="border-top: 5px solid #28a745;">
-            <h4 class="text-success"><i class="fas fa-calendar-day"></i> Today's Orders (අද දින ලබාදුන් Orders)</h4>
+            <h4 class="text-success"><i class="fas fa-utensils"></i> All Canteen Orders (ලැබුණු සියලු Orders)</h4>
             <div class="table-responsive">
                 <table class="table table-hover mt-3">
                     <thead class="thead-dark">
                         <tr>
-                            <th>Pickup Time</th>
+                            <th>Time</th>
                             <th>Name</th>
                             <th>Role/Grade</th>
                             <th>Phone</th>
@@ -146,42 +120,145 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="today-orders-body">
-                        <!-- Dynamic Today Orders Data -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- YESTERDAY'S ORDERS TABLE -->
-        <div class="section-box" style="border-top: 5px solid #6c757d;">
-            <h4 class="text-secondary"><i class="fas fa-history"></i> Yesterday's Orders (ඊයේ දින ලබාදුන් Orders)</h4>
-            <div class="table-responsive">
-                <table class="table table-hover mt-3">
-                    <thead class="thead-light">
+                    <tbody id="all-orders-body">
                         <tr>
-                            <th>Pickup Time</th>
-                            <th>Name</th>
-                            <th>Role/Grade</th>
-                            <th>Phone</th>
-                            <th>Ordered Foods</th>
-                            <th>Total Price</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <td colspan="8" class="text-center">Loading Data from Supabase...</td>
                         </tr>
-                    </thead>
-                    <tbody id="yesterday-orders-body">
-                        <!-- Dynamic Yesterday Orders Data -->
                     </tbody>
                 </table>
             </div>
         </div>
 
     </div>
-    
 
     <script>
-       
+        // Supabase Setup
+        const SUPABASE_URL = 'https://azzwynmjuuuxwyflujjo.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_KNa1UDWQTQ9qtkcGGDrIdQ_hLPNVXoe';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Fetch All Orders Function
+        async function fetchOrders() {
+            const tbody = document.getElementById('all-orders-body');
+            
+            const { data, error } = await _supabase
+                .from('canteen_orders')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.error("Error fetching orders:", error);
+                tbody.innerHTML = `<tr><td colspan="8" class="text-danger text-center">Error loading orders: ${error.message}</td></tr>`;
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center">කිසිදු Order එකක් හමුවූයේ නැත.</td></tr>`;
+                updateAnalytics([]);
+                return;
+            }
+
+            // Render Orders to Table
+            let html = '';
+            data.forEach(order => {
+                const statusBadge = order.status === 'Completed' 
+                    ? `<span class="badge-completed">Completed</span>`
+                    : `<span class="badge-pending">Pending</span>`;
+
+                html += `
+                    <tr>
+                        <td><b>${order.time || 'N/A'}</b></td>
+                        <td>${order.name || '-'}</td>
+                        <td><span class="badge badge-info">${order.methord || ''}</span> ${order.grade || ''}</td>
+                        <td>${order.phone || '-'}</td>
+                        <td>${order.foods || '-'}</td>
+                        <td class="text-success font-weight-bold">${order.totalCash || 'LKR 0.00'}</td>
+                        <td>${statusBadge}</td>
+                        <td>
+                            ${order.status !== 'Completed' ? `<button class="btn btn-sm btn-success mr-1" onclick="markCompleted('${order.id}')"><i class="fas fa-check"></i> Complete</button>` : ''}
+                            <button class="btn btn-sm btn-danger" onclick="deleteOrder('${order.id}')"><i class="fas fa-trash"></i> Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+            updateAnalytics(data);
+        }
+
+        // Analytics Update Function
+        function updateAnalytics(orders) {
+            document.getElementById('total-orders-count').innerText = orders.length;
+
+            const pendingCount = orders.filter(o => o.status === 'Pending').length;
+            document.getElementById('pending-orders-count').innerText = pendingCount;
+
+            let totalIncome = 0;
+            orders.forEach(o => {
+                if (o.totalCash) {
+                    const priceNum = parseFloat(o.totalCash.replace(/[^0-9.]/g, '')) || 0;
+                    totalIncome += priceNum;
+                }
+            });
+            document.getElementById('total-income').innerText = 'LKR ' + totalIncome.toFixed(2);
+        }
+
+        // Mark Order as Completed Function
+        async function markCompleted(orderId) {
+            const { error } = await _supabase
+                .from('canteen_orders')
+                .update({ status: 'Completed' })
+                .eq('id', orderId);
+
+            if (error) {
+                alert("Status එක Update කිරීමට නොහැකි විය: " + error.message);
+            } else {
+                fetchOrders(); // Refresh table
+            }
+        }
+
+        // Delete Single Order Function
+        async function deleteOrder(orderId) {
+            if (!confirm("මෙම Order එක ඉවත් කිරීමට ඔබට විශ්වාසද?")) return;
+
+            const { error } = await _supabase
+                .from('canteen_orders')
+                .delete()
+                .eq('id', orderId);
+
+            if (error) {
+                alert("Order එක ඉවත් කිරීමට නොහැකි විය: " + error.message);
+            } else {
+                fetchOrders();
+            }
+        }
+
+        // Clear All Orders Function
+        async function clearAllOrders() {
+            if (!confirm("අවධානයයි: මෙහි ඇති සියලුම Orders එකවර ඉවත් වේ! මෙය කිරීමට ඔබට විශ්වාසද?")) return;
+
+            const { error } = await _supabase
+                .from('canteen_orders')
+                .delete()
+                .neq('id', 0); // Delete all rows
+
+            if (error) {
+                alert("Orders ඉවත් කිරීමට නොහැකි විය: " + error.message);
+            } else {
+                fetchOrders();
+            }
+        }
+
+        // Realtime Subscription (නැවත Refresh නොකර කෙළින්ම Data Update වීමට)
+        _supabase
+            .channel('canteen_orders')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'canteen_orders' }, payload => {
+                fetchOrders();
+            })
+            .subscribe();
+
+        // Initial Fetch on Page Load
+        fetchOrders();
     </script>
 </body>
 </html>
