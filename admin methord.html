@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SELECT OPTION - POC</title>
+    <link rel="icon" href="/IMG/prince_online_canteen_youtube_logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<style>
+/* =========================================================
+   PRINCE ONLINE CANTEEN — design tokens
+   ========================================================= */
+:root {
+  --turmeric: #e3a021;
+  --turmeric-dark: #b97c12;
+  --chili: #c8401f;
+  --leaf: #2f5233;
+  --leaf-dark: #203823;
+  --leaf-light: #6f8f6a;
+  --cream: #faf3e3;
+  --cream-2: #f2e6cb;
+  --ink: #26221b;
+  --paper: #fffdf8;
+
+  --font-display: "Baloo 2", "Trebuchet MS", sans-serif;
+  --font-body: "Inter", "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --radius: 18px;
+  --shadow-card: 0 8px 24px rgba(47, 82, 51, 0.14);
+  --shadow-soft: 0 2px 10px rgba(38, 34, 27, 0.08);
+  --container: 1180px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { 
+  scroll-behavior: smooth; 
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--cream);
+  color: var(--ink);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+img { max-width: 100%; display: block; }
+
+a { color: inherit; text-decoration: none; }
+
+h1, h2, h3, .display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.2px;
+}
+
+.wrap {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 40px);
+  width: 100%;
+}
+
+/* focus visibility */
+a:focus-visible, button:focus-visible, input:focus-visible,
+select:focus-visible, .item:focus-visible {
+  outline: 3px solid var(--turmeric);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* NAV */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--leaf);
+  color: var(--paper);
+  box-shadow: var(--shadow-soft);
+}
+
+.site-nav .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 2.4vw, 1.4rem);
+  color: var(--paper);
+  white-space: nowrap;
+}
+
+.brand img {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 2px solid var(--turmeric);
+  object-fit: cover;
+  background: var(--paper);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-links a {
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.nav-links a:hover { background: rgba(255,255,255,0.1); }
+
+.nav-links a.cta {
+  background: var(--turmeric);
+  color: var(--ink);
+}
+.nav-links a.cta:hover { background: var(--turmeric-dark); }
+
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--paper);
+  font-size: 1.6rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 6px 10px;
+}
+
+@media (max-width: 720px) {
+  .nav-toggle { display: block; }
+  .nav-links {
+    position: absolute;
+    top: 72px;
+    left: 0;
+    right: 0;
+    background: var(--leaf-dark);
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+  .nav-links.open { max-height: 320px; }
+  .nav-links a {
+    border-radius: 0;
+    padding: 16px clamp(16px, 4vw, 40px);
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+}
+
+/* BUTTONS */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.98rem;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
+}
+.btn:active { transform: translateY(1px); }
+
+/* SELECT OPTION SECTION (RESPONSIVE) */
+.option-selection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(40px, 8vw, 80px) 20px;
+  text-align: center;
+}
+
+.option-title {
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-size: clamp(2rem, 6vw, 3.2rem);
+  color: var(--leaf-dark);
+  margin-bottom: 40px;
+  letter-spacing: 1px;
+}
+
+.option-actions {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  max-width: 600px;
+}
+
+.option-btn {
+  background: var(--turmeric);
+  color: var(--ink);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  font-family: var(--font-body);
+  flex: 1;
+  min-width: 220px;
+  padding: 18px 30px;
+  font-size: 1rem;
+}
+
+.option-btn:hover {
+  background: var(--turmeric-dark);
+  color: var(--paper);
+}
+
+.option-btn.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 480px) {
+  .option-actions {
+    flex-direction: column;
+  }
+  .option-btn {
+    width: 100%;
+  }
+}
+</style>
+<body>
+
+  <nav class="site-nav">
+    <div class="wrap">
+      <a href="index.html" class="brand">
+        <img src="prince_online_canteen_youtube_logo.png" alt="Logo">
+        Prince Online Canteen
+      </a>
+      <button class="nav-toggle" aria-label="Toggle menu">&#9776;</button>
+      <div class="nav-links">
+        <a href="index.html">HOME -></a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="option-selection">
+    <h1 class="option-title">Select Option</h1>
+    <div class="option-actions">
+      <a class="btn option-btn" href="adming.html" id="k">ODERS CHECK</a>
+      <a class="btn option-btn" href="admin chanege.html" id="btna">EDIT WEB</a>
+    </div>
+  </main>
+
+  <script>
+    // Hamburger Menu Functionality
+    const navToggle = document.querySelector('.nav-toggle');
+    const navLinks = document.querySelector('.nav-links');
+
+    navToggle.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+    });
+
+    // Time Restriction Logic (Sri Lanka Time: Asia/Colombo)
+    function isTimeAllowed() {
+      const now = new Date();
+      
+      // Sri Lanka Time zone එකට අදාළ පැය සහ මිනිත්තු ලබා ගැනීම
+      const slTimeString = now.toLocaleString("en-US", { timeZone: "Asia/Colombo", hour12: false });
+      const slDate = new Date(slTimeString);
+
+      const hours = slDate.getHours();
+      const minutes = slDate.getMinutes();
+      const currentDecimalTime = hours + (minutes / 60);
+
+      // Unlock Hours: 1.30 PM (13.50) සිට 6.00 AM (6.00) දක්වා
+      // රාත්‍රී 12 පසුවී 6.00 AM දක්වා හෝ ප.ව. 1.30 සිට 11.59 PM දක්වා
+      return (currentDecimalTime < 11.5) || (currentDecimalTime >= 13.5);
+    }
+
+    const optionButtons = document.querySelectorAll('.option-btn');
+
+    optionButtons.forEach(button => {
+      button.addEventListener('click', (event) => {
+        if (!isTimeAllowed()) {
+          event.preventDefault(); // Link එකට යන එක නවත්වනවා
+          alert("කණගාටුයි! මෙම සේවාව ලබා ගත හැක්කේ ප.ව. 1.30 සිට පෙ.ව. 5.30 දක්වා පමණි.");
+        }
+      });
+    });
+  </script>
+</body>
+</html>

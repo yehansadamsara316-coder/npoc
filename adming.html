@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prince Online Canteen - Admin Panel</title>
-    <link rel="icon" href="prince_online_canteen_youtube_logo.png">
+    <link rel="icon" href="/IMG/prince_online_canteen_youtube_logo.png">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
@@ -468,6 +468,13 @@ function sendEmailNotification(name, email, orderId, totalCash) {
             console.error('EMAIL FAILED...', error);
         });
 }
+async function updatePaymentStatus(orderId) {
+    const { data, error } = await _supabase
+        .from('canteen_orders')
+        .update({ status: 'Paid' })
+        .eq('id', orderId);
+}
+
 
         // Realtime Subscription (නැවත Refresh නොකර කෙළින්ම Data Update වීමට)
         _supabase
