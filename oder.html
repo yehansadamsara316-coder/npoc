@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ODER.POC</title>
+    <title>ODER.POC — Prince Online Canteen</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="icon" href="/IMG/prince_online_canteen_youtube_logo.png">
@@ -13,13 +13,10 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
-       /* =========================================================
-   PRINCE ONLINE CANTEEN — design tokens
-   ========================================================= */
 :root {
   --turmeric: #e3a021;
   --turmeric-dark: #b97c12;
-  --chili: #00ff15;
+  --chili: #c8401f;
   --leaf: #2f5233;
   --leaf-dark: #203823;
   --leaf-light: #6f8f6a;
@@ -27,374 +24,82 @@
   --cream-2: #f2e6cb;
   --ink: #26221b;
   --paper: #fffdf8;
-
   --font-display: "Baloo 2", "Trebuchet MS", sans-serif;
   --font-body: "Inter", "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
-
-  --radius: 18px;
-  --shadow-card: 0 8px 24px rgba(47, 82, 51, 0.14);
-  --shadow-soft: 0 2px 10px rgba(38, 34, 27, 0.08);
-  --container: 1180px;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-body); background: var(--cream); color: var(--ink); min-height: 100vh; }
 
-html { scroll-behavior: smooth; }
-
-body {
-  font-family: var(--font-body);
-  background: var(--cream);
-  color: var(--ink);
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-}
-
-img { max-width: 100%; display: block; }
-
-a { color: inherit; text-decoration: none; }
-
-h1, h2, h3, .display {
-  font-family: var(--font-display);
-  font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: 0.2px;
-}
-
-.wrap {
-  max-width: var(--container);
-  margin: 0 auto;
-  padding: 0 clamp(16px, 4vw, 40px);
-}
-
-a:focus-visible, button:focus-visible, input:focus-visible,
-select:focus-visible, .item:focus-visible {
-  outline: 3px solid var(--turmeric);
-  outline-offset: 2px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
+/* Responsive Navigation */
 .site-nav {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: var(--leaf);
-  color: var(--paper);
-  box-shadow: var(--shadow-soft);
-  width: 100%;
+  position: sticky; top: 0; z-index: 100;
+  background: var(--leaf); color: var(--paper); width: 100%;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
 }
-
 .site-nav .wrap {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 72px;
+  display: flex; align-items: center; justify-content: space-between;
+  min-height: 72px; max-width: 1180px; margin: 0 auto; padding: 10px 20px;
+  flex-wrap: wrap;
 }
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-family: var(--font-display);
-  font-size: clamp(1.05rem, 2.4vw, 1.4rem);
-  color: var(--paper);
-  white-space: nowrap;
-}
+.brand { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-size: 1.2rem; color: #fff; text-decoration: none; font-weight: bold; }
+.brand img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--turmeric); }
+.nav-links { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.nav-links a { padding: 8px 14px; border-radius: 999px; font-weight: 600; color: #fff; text-decoration: none; font-size: 0.9rem; }
+.nav-links a.cta { background: var(--turmeric); color: var(--ink); }
+.nav-links a.admin-btn { background: #d9534f; color: #fff; }
 
-.brand img {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  border: 2px solid var(--turmeric);
-  object-fit: cover;
-  background: var(--paper);
-}
+/* Section Layout */
+.oder { padding: 20px 10px; }
+.text-align { margin: 0 auto; max-width: 800px; background: #055a4f; padding: 25px; border-radius: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
 
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.form-control { border-radius: 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; height: 45px; transition: all 0.3s ease; }
+
+.form-control.autofilled {
+    background-color: #1a1a1a !important;
+    color: #ffffff !important;
+    border: 2px solid #e3a021 !important;
+    font-weight: bold !important;
 }
 
-.nav-links a {
-  padding: 10px 18px;
-  border-radius: 999px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  transition: background 0.2s ease, color 0.2s ease;
+.btnSubmit { width: 100%; border-radius: 1rem; padding: 14px; color: #fff; background-color: #2f5233; border: none; font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: 0.3s; }
+.btnSubmit:hover { background-color: #203823; }
+
+/* Order Type Selector */
+.order-type-box {
+  background: #ffffff; padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: center;
 }
+.order-type-box label { font-weight: bold; margin: 5px 10px; cursor: pointer; color: #26221b; display: inline-block; }
 
-.nav-links a:hover { background: rgba(255,255,255,0.1); }
+/* Food Selection List */
+.select-btn { display: flex; height: 48px; align-items: center; justify-content: space-between; padding: 0 16px; border-radius: 8px; cursor: pointer; background-color: #e2e0e0; font-size: 0.95rem; }
+.list-items { position: relative; width: 100%; margin-top: 10px; border-radius: 8px; padding: 10px; background-color: #fff; max-height: 300px; overflow-y: auto; }
+.list-items .item { display: flex; align-items: center; justify-content: space-between; min-height: 48px; cursor: pointer; padding: 5px 12px; border-radius: 8px; border-bottom: 1px solid #eee; }
+.list-items .item:hover { background-color: #e3f2fd; }
+.item-left { display: flex; align-items: center; }
+.item-text { font-size: 0.9rem; font-weight: 600; }
+.item.checked .checkbox { background-color: #2f5233; border-color: #2f5233; }
+.checkbox { display: flex; align-items: center; justify-content: center; height: 20px; width: 20px; border-radius: 4px; margin-right: 12px; border: 1.5px solid #c0c0c0; flex-shrink: 0; }
+.checkbox .check-icon { color: #fff; font-size: 11px; transform: scale(0); transition: 0.2s ease; }
+.item.checked .check-icon { transform: scale(1); }
+.item-price { font-weight: bold; color: #c8401f; font-size: 0.9rem; white-space: nowrap; }
 
-.nav-links a.cta {
-  background: var(--turmeric);
-  color: var(--ink);
-}
-.nav-links a.cta:hover { background: var(--turmeric-dark); }
+.total-cash-box { background: white; color: #000; padding: 14px; border-radius: 10px; font-size: 1.2rem; font-weight: 700; text-align: center; margin-top: 15px; border: 2px solid #e3a021; }
 
-.nav-toggle {
-  display: none;
-  background: none;
-  border: none;
-  color: var(--paper);
-  font-size: 1.6rem;
-  cursor: pointer;
-  line-height: 1;
-  padding: 6px 10px;
-}
-
-.register .nav-tabs .nav-link:hover {
-    border: none;
-}
-
-.oder {
-    padding: 20px 15px;
-    width: 100%;
-}
-
-.text-align {
-    margin: 0 auto;
-    padding: 20px 10px;
-    width: 100%;
-    max-width: 800px;
-}
-
-.form-new {
-    margin: 0 auto;
-}
-
-.register-heading {
-    margin: 0 auto 20px auto;
-    color: #e9ecef;
-    width: 100%;
-    max-width: 100%;
-    text-align: center;
-}
-
-.register-heading h1 {
-    margin: 0;
-    color: #e9ecef;
-}
-
-.register {
-    background: -webkit-linear-gradient(left, #055a4f, #00c6ff);
-    margin-top: 3%;
-    padding: 3%;
-    border-radius: 2.5rem;
-}
-
-.btnSubmit {
-    width: 100%;
-    border-radius: 1rem;
-    padding: 12px;
-    color: #fff;
-    background-color: #03612e;
-    border: none;
-    cursor: pointer;
-    color: rgb(246, 246, 252);
-    margin-top: 20px;
-}
-
-.container {
-    position: relative;
-    max-width: 100%;
-    width: 100%;
-    margin: 20px 0;
-    padding: 0;
-}
-
-.select-btn {
-    display: flex;
-    height: 45px;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    background-color: #d3cccc;
-    box-shadow: 0 5px 10px rgba(30, 0, 255, 0.1);
-}
-
-.select-btn .btn-text {
-    font-size: 17px;
-    font-weight: 400;
-    color: #000000;
-}
-
-.select-btn .arrow-dwn {
-    display: flex;
-    height: 21px;
-    width: 21px;
-    color: #fff;
-    font-size: 14px;
-    border-radius: 50%;
-    background: #6e93f7;
-    align-items: center;
+@media (max-width: 576px) {
+  .site-nav .wrap {
     justify-content: center;
-    transition: 0.3s;
-    margin-left: 0;
-    margin-top: 0;
-}
-
-.select-btn.open .arrow-dwn {
-    transform: rotate(-180deg);
-}
-
-.select-btn.open ~ .list-items {
-    opacity: 0;
-    animation-name: fadeInUp;
-    -webkit-animation-name: fadeInUp;
-    animation-duration: 0.4s;
-    animation-fill-mode: both;
-    -webkit-animation-duration: 0.4s;
-    -webkit-animation-fill-mode: both;
-}
-
-.list-items {
-    position: relative;
-    max-width: 100%;
-    width: 100%;
-    margin-top: 15px;
-    border-radius: 8px;
-    padding: 16px;
-    background-color: #fff;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-    animation-name: fadeInDown;
-    -webkit-animation-name: fadeInDown;
-    animation-duration: 0.35s;
-    animation-fill-mode: both;
-    -webkit-animation-duration: 0.35s;
-    -webkit-animation-fill-mode: both;
-}
-
-.list-items .item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    list-style: none;
-    height: 50px;
-    cursor: pointer;
-    transition: 0.3s;
-    padding: 0 15px;
-    border-radius: 8px;
-}
-
-.list-items .item:hover {
-    background-color: #e3f2fd;
-}
-
-.item-left {
-    display: flex;
-    align-items: center;
-}
-
-.item .item-text {
-    font-size: 16px;
-    font-weight: 400;
-    color: #333;
-}
-
-.item .item-price {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--chili);
-}
-
-.item .checkbox {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 16px;
-    width: 16px;
-    border-radius: 4px;
-    margin-right: 12px;
-    border: 1.5px solid #c0c0c0;
-    transition: all 0.3s ease-in-out;
-}
-
-.item.checked .checkbox {
-    background-color: #4070f4;
-    border-color: #4070f4;
-}
-
-.item.checked .check-icon {
-    transform: scale(1);
-}
-
-.checkbox .check-icon {
-    color: #fff;
-    font-size: 11px;
-    transform: scale(0);
-    transition: all 0.2s ease-in-out;
-}
-
-.total-cash-box {
-    background: white;
-    color: #000000;
-    padding: 12px 20px;
-    border-radius: 10px;
-    font-size: 1.2rem;
-    font-weight: 700;
-    text-align: center;
-    margin-top: 15px;
-    margin-left: 0;
-    width: 100%;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-
-@keyframes fadeInUp {
-  from{
-    transform: translate3d(0, 30px 0);
+    gap: 10px;
+    padding: 10px;
   }
-  to{
-    transform: translate3d(0,0,0);
-    opacity: 1;
-  }
-}
-
-@keyframes fadeInDown {
-  from{
-    transform: translate3d(0,0,0);
-  }
-  to{
-    transform: translate3d(0,20px,0);
-    opacity: 0;
-  }
-}
-
-@media (max-width: 720px) {
-  .nav-toggle { display: block; }
-  .nav-links {
-    position: absolute;
-    visibility: hidden;
-    top: 72px;
-    left: 0;
-    right: 0;
-    background: var(--leaf-dark);
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
-  }
-  .nav-links.open { 
-    max-height: 320px; 
-    visibility: visible;
-  }
-  .nav-links a {
-    border-radius: 0;
-    visibility: visible;
-    padding: 16px clamp(16px, 4vw, 40px);
-    border-top: 1px solid rgba(255,255,255,0.08);
-  }
+  .brand { font-size: 1.1rem; }
+  .nav-links a { padding: 6px 12px; font-size: 0.8rem; }
+  .oder { padding: 15px 5px; }
+  .text-align { padding: 18px 12px; border-radius: 1rem; }
+  .order-type-box label { display: block; margin: 8px 0; }
+  .btnSubmit { font-size: 1rem; padding: 12px; }
+  .total-cash-box { font-size: 1.05rem; }
 }
     </style>
 </head>
@@ -402,264 +107,168 @@ select:focus-visible, .item:focus-visible {
 <body>
 
   <nav class="site-nav">
-  <div class="wrap">
-    <a href="index.html" class="brand">
-      <img src="prince_online_canteen_youtube_logo.png" alt="">
-      Prince Online Canteen
-    </a>
-    <button class="nav-toggle" aria-label="Toggle menu">&#9776;</button>
-    <div class="nav-links">
-      <a href="index.html">HOME</a>
-      <a href="about.html">About</a>
-      <a href="METHORDE.html" class="cta">Order now</a>
+    <div class="wrap">
+      <a href="index.html" class="brand">
+        <img src="prince_online_canteen_youtube_logo.png" alt="" onerror="this.src='https://placehold.co/100x100/e3a021/26221b?text=POC'">
+        Prince Online Canteen
+      </a>
+      <div class="nav-links">
+        <a href="index.html">HOME</a>
+        <a href="about.html">About</a>
+        <a href="adming.html" class="admin-btn"><i class="fa-solid fa-user-shield"></i> Admin</a>
+        <a href="oder.html" class="cta">Order now</a>
+      </div>
     </div>
-  </div>
-</nav>
+  </nav>
 
     <section class="oder">
         <div class="container-fluid">
             <div class="row justify-content-center">
                 <div class="col-12 col-md-10 col-lg-8">
-                    <div class="tab-pane fade show active text-align form-new" id="home" role="tabpanel" aria-labelledby="home-tab">
-                   
-                    <div class="row register-form">
-                        <div class="col-12">
-                            <form autocomplete="off">
-                                <div class="form-group">
-                                    <input type="text" name="Name" id="name" class="form-control"
-                                        placeholder="Your Name *" value="" required="" style="border-radius: 10px;font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);"/>
+                    <div class="text-align">
+                        <h3 class="text-white text-center mb-4 font-weight-bold">Place Your Canteen Order</h3>
+                        <form autocomplete="off">
+                            
+                            <!-- Pickup / Delivery Option -->
+                            <div class="order-type-box">
+                                <span class="d-block mb-2 font-weight-bold">Select Order Type:</span>
+                                <label><input type="radio" name="orderType" value="Pickup" checked onchange="calculateTotal()"> <i class="fa-solid fa-store text-success"></i> Pickup (කැන්ටින් එකෙන් ගන්න)</label>
+                                <label><input type="radio" name="orderType" value="Delivery" onchange="calculateTotal()"> <i class="fa-solid fa-truck text-warning"></i> Delivery (+ LKR 50.00)</label>
+                            </div>
+
+                            <div class="form-group">
+                                <input type="text" id="name" class="form-control" placeholder="Your Name *" required/>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group col-12 col-sm-6">
+                                    <input type="time" id="time" class="form-control" required/>
                                 </div>
-                                <div class="form-group">
-                                    <input type="time" name="Email" id="time" class="form-control"
-                                        placeholder="TIME *" value="" required="" style="border-radius: 10px;font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);"/>
+                                <div class="form-group col-12 col-sm-6">
+                                    <input type="number" id="phone" class="form-control" placeholder="Your Contact Number *" required/>
                                 </div>
-                                <div class="form-group">
-                                    <input type="number" name="Phone" id="phone" class="form-control"
-                                        placeholder="Your Contact Number *" value="" required="" style="border-radius: 10px;font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);"/>
-                                </div>
-                                   <div class="form-group">
-                                    <select name="teacher or student" id="methord" class="form-control"
-                                        required="" style="border-radius: 10px;font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);">
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-12 col-sm-6">
+                                    <select id="methord" class="form-control" required>
                                         <option value="STUDENT">STUDENT</option>
                                         <option value="TEACHER">TEACHER</option>
                                         <option value="PRINCIPAL">PRINCIPAL</option>
                                     </select>
                                 </div>
-     <select type="text" name="Name" id="grade" class="form-control"
-                                        required="" style="border-radius: 10px;font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;color:darkorange;box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);">
-     <option value="">SELECT GRADE / PLACE *</option> 
-      <option value="3-A">3-A</option>
-       <option value="3-B">3-B</option>
-        <option value="4-A">4-A</option>
-         <option value="4-B">4-B</option>
-          <option value="5-A">5-A</option>
-           <option value="5-B">5-B</option>
-            <option value="6-A">6-A</option>
-             <option value="6-B">6-B</option>
-              <option value="6-C">6-C</option>
-               <option value="6-D">6-D</option>
-                <option value="6-E">6-E</option>
-                 <option value="7-A">7-A</option>
-                  <option value="7-B">7-B</option>
-                   <option value="7-C">7-C</option>
-                    <option value="7-D">7-D</option>
-                     <option value="7-E">7-E</option>
-                     <option value="8-A">8-A</option>
-                     <option value="8-B">8-B</option>
-                      <option value="8-C">8-C</option>
-                       <option value="8-D">8-D</option>
-                        <option value="8-E">8-E</option>
-                         <option value="9-A">9-A</option>
-                          <option value="9-B">9-B</option>
-                           <option value="9-C">9-C</option>
-                            <option value="9-D">9-D</option>
-                             <option value="9-E">9-E</option>
-                              <option value="10-A">10-A</option>
-                               <option value="10-B">10-B</option>
-                                <option value="10-C">10-C</option>
-                                 <option value="10-D">10-D</option>
-                                  <option value="10-E">10-E</option>
-                                   <option value="11-A">11-A</option>
-                                    <option value="11-B">11-B</option>
-                                     <option value="11-C">11-C</option>
-                                      <option value="11-D">11-D</option>
-                                       <option value="11-E">11-E</option>
-                                       <option value="OFFICE">OFFICE</option>
-                                       <option value="STAF ROOM">STAF ROOM</option>
-                                       <option value="ICT">ICT LAB</option>
-                                       <option value="SCIENCE">SCIENCE LAB</option>
-                                       <option value="SPORT">SPORT ROOM</option>
-                                       <option value="BOOK">BOOK SHOP</option>
-                                       <option value="MIUSIC">MIUSIC ROOM</option>
-                                       <option value="DANCING">DANCING ROOM</option>
-     </select>
-     <div class="form-group">
-    <label style="color: white; font-weight: bold;">Email Address *</label>
-    <input type="email" id="email" class="form-control" placeholder="example@gmail.com" required />
-</div>
-     <div class="container">
-         <div class="select-btn open">
-           <span class="btn-text">SELECT FOODS</span>
-           <span class="arrow-dwn"><i class="fa-solid fa-chevron-down"></i></span>
-         </div>
-    
-     <ul class="list-items">
-      <li class="item" data-price="200">
-        <div class="item-left">
-          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
-          <span class="item-text">FRIDE RICE - SMALL</span>
-        </div>
-        <span class="item-price">LKR 200</span>
-      </li>
-
-      <li class="item" data-price="300">
-        <div class="item-left">
-          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
-          <span class="item-text">FRIDE RICE - MEDIAM</span>
-        </div>
-        <span class="item-price">LKR 300</span>
-      </li>
-
-      <li class="item" data-price="500">
-        <div class="item-left">
-          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
-          <span class="item-text">FRIDE RICE - LARGE</span>
-        </div>
-        <span class="item-price">LKR 500</span>
-      </li>
-
-      <li class="item" data-price="50">
-        <div class="item-left">
-          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
-          <span class="item-text">WADEI</span>
-        </div>
-        <span class="item-price">LKR 50</span>
-      </li>
-      
-      <li class="item" data-price="50">
-        <div class="item-left">
-          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
-          <span class="item-text">MANGO JUICE</span>
-        </div>
-        <span class="item-price">LKR 50</span>
-      </li>
-
-      <li class="item" data-price="50">
-        <div class="item-left">
-          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
-          <span class="item-text">WOODAPPLE JUICE</span>
-        </div>
-        <span class="item-price">LKR 50</span>
-      </li>
-
-      <li class="item" data-price="300">
-        <div class="item-left">
-          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
-          <span class="item-text">BURIYANI</span>
-        </div>
-        <span class="item-price">LKR 300</span>
-      </li>
-
-      <li class="item" data-price="50">
-        <div class="item-left">
-          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
-          <span class="item-text">PARATA</span>
-        </div>
-        <span class="item-price">LKR 50</span>
-      </li>
-
-      <li class="item" data-price="100">
-        <div class="item-left">
-          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
-          <span class="item-text">EGG ROTI</span>
-        </div>
-        <span class="item-price">LKR 100</span>
-      </li>
-
-      <li class="item" data-price="100">
-        <div class="item-left">
-          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
-          <span class="item-text">STRING HOPPERS</span>
-        </div>
-        <span class="item-price">LKR 100</span>
-      </li>
-
-      <li class="item" data-price="100">
-        <div class="item-left">
-          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
-          <span class="item-text">EGG ROLE</span>
-        </div>
-        <span class="item-price">LKR 100</span>
-      </li>
-
-      <li class="item" data-price="50">
-        <div class="item-left">
-          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
-          <span class="item-text">POL ROTI</span>
-        </div>
-        <span class="item-price">LKR 50</span>
-      </li>
-
-      <li class="item" data-price="40">
-        <div class="item-left">
-          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
-          <span class="item-text">PATIS</span>
-        </div>
-        <span class="item-price">LKR 40</span>
-      </li>
-
-      <li class="item" data-price="50">
-        <div class="item-left">
-          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
-          <span class="item-text">KATLET</span>
-        </div>
-        <span class="item-price">LKR 50</span>
-      </li>
-
-      <li class="item" data-price="20">
-        <div class="item-left">
-          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
-          <span class="item-text">PARIPPU WADA</span>
-        </div>
-        <span class="item-price" style="color: red;">LKR 20</span>
-      </li>
-
-      <li class="item" data-price="50">
-        <div class="item-left">
-          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
-          <span class="item-text">HALAPA</span>
-        </div>
-        <span class="item-price">LKR 50</span>
-      </li>
-
-      <li class="item" data-price="50">
-        <div class="item-left">
-          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
-          <span class="item-text">YOGET</span>
-        </div>
-        <span class="item-price">LKR 50</span>
-      </li>
-
-      <li class="item" data-price="50">
-        <div class="item-left">
-          <span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span>
-          <span class="item-text">SALED</span>
-        </div>
-        <span class="item-price">LKR 50</span>
-      </li>
-     </ul>
-
-     <!-- Total Cash Display -->
-     <div class="total-cash-box">
-        Total Cash: <span id="total-cash">LKR 0.00</span>
-     </div>
-     </div>
-
-                                <div class="form-group">
-                                    <input type="button" name="submit" class="btnSubmit btn-block" onclick="gotowhatsapp()" value="Submit Order" id="sub" style="font-family: serif;"/>
+                                <div class="form-group col-12 col-sm-6">
+                                    <select id="grade" class="form-control" required>
+                                        <option value="">SELECT GRADE / PLACE *</option> 
+                                        <option value="3-A">3-A</option><option value="3-B">3-B</option>
+                                        <option value="4-A">4-A</option><option value="4-B">4-B</option>
+                                        <option value="5-A">5-A</option><option value="5-B">5-B</option>
+                                        <option value="6-A">6-A</option><option value="6-B">6-B</option><option value="6-C">6-C</option>
+                                        <option value="7-A">7-A</option><option value="7-B">7-B</option><option value="7-C">7-C</option>
+                                        <option value="8-A">8-A</option><option value="8-B">8-B</option><option value="8-C">8-C</option>
+                                        <option value="9-A">9-A</option><option value="9-B">9-B</option><option value="9-C">9-C</option>
+                                        <option value="10-A">10-A</option><option value="10-B">10-B</option><option value="10-C">10-C</option>
+                                        <option value="11-A">11-A</option><option value="11-B">11-B</option><option value="11-C">11-C</option>
+                                        <option value="OFFICE">OFFICE</option><option value="STAFF ROOM">STAFF ROOM</option>
+                                        <option value="ICT LAB">ICT LAB</option><option value="SCIENCE LAB">SCIENCE LAB</option>
+                                    </select>
                                 </div>
-                            </form>
-                        </div>
+                            </div>
+
+                            <div class="form-group">
+                                <input type="email" id="email" class="form-control" placeholder="Email Address (example@gmail.com)" />
+                            </div>
+
+                            <div class="container p-0">
+                                <div class="select-btn">
+                                  <span class="btn-text font-weight-bold">SELECT FOODS</span>
+                                  <span class="arrow-dwn"><i class="fa-solid fa-chevron-down"></i></span>
+                                </div>
+                           
+                                <ul class="list-items">
+                                  <li class="item" data-price="200">
+                                    <div class="item-left"><span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span><span class="item-text">FRIED RICE - SMALL</span></div>
+                                    <span class="item-price">LKR 200</span>
+                                  </li>
+                                  <li class="item" data-price="300">
+                                    <div class="item-left"><span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span><span class="item-text">FRIED RICE - MEDIUM</span></div>
+                                    <span class="item-price">LKR 300</span>
+                                  </li>
+                                  <li class="item" data-price="500">
+                                    <div class="item-left"><span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span><span class="item-text">FRIED RICE - LARGE</span></div>
+                                    <span class="item-price">LKR 500</span>
+                                  </li>
+                                  <li class="item" data-price="50">
+                                    <div class="item-left"><span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span><span class="item-text">WADE</span></div>
+                                    <span class="item-price">LKR 50</span>
+                                  </li>
+                                  <li class="item" data-price="50">
+                                    <div class="item-left"><span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span><span class="item-text">MANGO JUICE</span></div>
+                                    <span class="item-price">LKR 50</span>
+                                  </li>
+                                  <li class="item" data-price="50">
+                                    <div class="item-left"><span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span><span class="item-text">WOOD APPLE JUICE</span></div>
+                                    <span class="item-price">LKR 50</span>
+                                  </li>
+                                  <li class="item" data-price="300">
+                                    <div class="item-left"><span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span><span class="item-text">BIRYANI</span></div>
+                                    <span class="item-price">LKR 300</span>
+                                  </li>
+                                  <li class="item" data-price="50">
+                                    <div class="item-left"><span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span><span class="item-text">PARATHA</span></div>
+                                    <span class="item-price">LKR 50</span>
+                                  </li>
+                                  <li class="item" data-price="100">
+                                    <div class="item-left"><span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span><span class="item-text">EGG ROTI</span></div>
+                                    <span class="item-price">LKR 100</span>
+                                  </li>
+                                  <li class="item" data-price="100">
+                                    <div class="item-left"><span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span><span class="item-text">STRING HOPPERS</span></div>
+                                    <span class="item-price">LKR 100</span>
+                                  </li>
+                                  <li class="item" data-price="70">
+                                    <div class="item-left"><span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span><span class="item-text">EGG ROLL</span></div>
+                                    <span class="item-price">LKR 70</span>
+                                  </li>
+                                  <li class="item" data-price="50">
+                                    <div class="item-left"><span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span><span class="item-text">POL ROTI</span></div>
+                                    <span class="item-price">LKR 50</span>
+                                  </li>
+                                  <li class="item" data-price="40">
+                                    <div class="item-left"><span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span><span class="item-text">PATTIES</span></div>
+                                    <span class="item-price">LKR 40</span>
+                                  </li>
+                                  <li class="item" data-price="50">
+                                    <div class="item-left"><span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span><span class="item-text">CUTLET</span></div>
+                                    <span class="item-price">LKR 50</span>
+                                  </li>
+                                  <li class="item" data-price="50">
+                                    <div class="item-left"><span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span><span class="item-text">PARIPPU WADE</span></div>
+                                    <span class="item-price">LKR 50</span>
+                                  </li>
+                                  <li class="item" data-price="50">
+                                    <div class="item-left"><span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span><span class="item-text">HALAPA</span></div>
+                                    <span class="item-price">LKR 50</span>
+                                  </li>
+                                  <li class="item" data-price="50">
+                                    <div class="item-left"><span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span><span class="item-text">YOGURT</span></div>
+                                    <span class="item-price">LKR 50</span>
+                                  </li>
+                                  <li class="item" data-price="50">
+                                    <div class="item-left"><span class="checkbox"><i class="fa-solid fa-check check-icon"></i></span><span class="item-text">SALAD</span></div>
+                                    <span class="item-price">LKR 50</span>
+                                  </li>
+                                </ul>
+
+                                <div class="total-cash-box">
+                                   Total Cash: <span id="total-cash">LKR 0.00</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group mt-4 mb-0">
+                                <input type="button" class="btnSubmit" onclick="submitOrder()" value="Submit Order" id="sub" />
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -667,25 +276,31 @@ select:focus-visible, .item:focus-visible {
     </section>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
     <script>
-        // Supabase Client Initialization
         const SUPABASE_URL = 'https://azzwynmjuuuxwyflujjo.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_KNa1UDWQTQ9qtkcGGDrIdQ_hLPNVXoe';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Navbar toggle logic
-        const navToggle = document.querySelector('.nav-toggle');
-        const navLinks = document.querySelector('.nav-links');
-        if (navToggle) {
-          navToggle.addEventListener('click', () => {
-            navLinks.classList.toggle('open');
-          });
-        }
-
         const selectBtn = document.querySelector(".select-btn"),
               items = document.querySelectorAll(".item"),
               totalCashDisplay = document.getElementById("total-cash");
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const savedName = localStorage.getItem("user_name");
+            const savedPhone = localStorage.getItem("user_phone");
+            const savedEmail = localStorage.getItem("user_email");
+            const savedMethord = localStorage.getItem("user_methord");
+
+            const nameInput = document.getElementById("name");
+            const phoneInput = document.getElementById("phone");
+            const emailInput = document.getElementById("email");
+            const methordInput = document.getElementById("methord");
+
+            if (savedName) { nameInput.value = savedName; nameInput.classList.add("autofilled"); }
+            if (savedPhone) { phoneInput.value = savedPhone; phoneInput.classList.add("autofilled"); }
+            if (savedEmail) { emailInput.value = savedEmail; emailInput.classList.add("autofilled"); }
+            if (savedMethord) { methordInput.value = savedMethord; methordInput.classList.add("autofilled"); }
+        });
 
         if (selectBtn) {
           selectBtn.addEventListener("click", () => {
@@ -696,12 +311,16 @@ select:focus-visible, .item:focus-visible {
         items.forEach((item => {
            item.addEventListener("click" , () => {
             item.classList.toggle("checked");
+            calculateTotal();
+           });
+        }));
 
-            let checked = document.querySelectorAll(".checked"),
-                btnText = document.querySelector(".btn-text");
+        function calculateTotal() {
+            let checked = document.querySelectorAll(".checked");
+            let btnText = document.querySelector(".btn-text");
 
             if(checked && checked.length > 0){
-              btnText.innerText = checked.length + " selected";
+              btnText.innerText = checked.length + " items selected";
             } else{
               btnText.innerText = "SELECT FOODS";
             }
@@ -712,32 +331,41 @@ select:focus-visible, .item:focus-visible {
               total += price;
             });
 
-            totalCashDisplay.innerText = "LKR " + total.toFixed(2);
-           });
-        }));
+            const orderType = document.querySelector('input[name="orderType"]:checked').value;
+            if (orderType === "Delivery" && total > 0) {
+                total += 50;
+            }
 
-        async function gotowhatsapp() {
-            var name = document.getElementById("name").value;
-            var phone = document.getElementById("phone").value;
+            totalCashDisplay.innerText = "LKR " + total.toFixed(2);
+        }
+
+        async function submitOrder() {
+            var name = document.getElementById("name").value.trim();
+            var phone = document.getElementById("phone").value.trim();
             var time = document.getElementById("time").value;
             var checkedItems = document.querySelectorAll(".item.checked .item-text");
             var foods = Array.from(checkedItems).map(el => el.innerText).join(", ");
             var methord = document.getElementById("methord").value;
             var grade = document.getElementById("grade").value;
+            var email = document.getElementById("email").value.trim();
             var totalCash = document.getElementById("total-cash").innerText;
+            var orderType = document.querySelector('input[name="orderType"]:checked').value;
             var subBtn = document.getElementById("sub");
 
             if (!name || !phone || checkedItems.length === 0 || !grade) {
-                alert("කරුණාකර සියලු විස්තර, Grade/Place සහ ආහාර තෝරන්න!");
+                alert("Please fill all fields, Grade/Place, and select at least one food!");
                 return;
             }
 
-            // Disable button during submission
+            localStorage.setItem("user_name", name);
+            localStorage.setItem("user_phone", phone);
+            localStorage.setItem("user_email", email);
+            localStorage.setItem("user_methord", methord);
+
             subBtn.disabled = true;
             subBtn.value = "Sending Order...";
 
             try {
-                // 1. Insert order to Supabase
                 const { data, error } = await _supabase
                     .from('canteen_orders')
                     .insert([{
@@ -747,126 +375,25 @@ select:focus-visible, .item:focus-visible {
                         methord: methord,
                         grade: grade,
                         foods: foods,
+                        email: email,
                         totalCash: totalCash,
+                        order_type: orderType,
                         status: 'Pending'
-                    }])
-                    .select();
+                    }]);
 
                 if (error) {
-                    alert("Order එක admin වෙත යැවීමට නොහැකි විය check your conection: " + error.message);
+                    alert("Order submission failed: " + error.message);
                     subBtn.disabled = false;
                     subBtn.value = "Submit Order";
                     return;
                 }
 
-                alert("ඔබගේ Order එක සාර්ථකව Canteen එක වෙත යවන ලදී!");
-
-                var btnText = document.querySelector(".btn-text");
-                if (btnText) {
-                    btnText.innerText = "SELECT FOODS";
-                }
-                if (totalCashDisplay) {
-                    totalCashDisplay.innerText = "LKR 0.00";
-                }
-                async function submitOrder() {
-    var name = document.getElementById("name").value;
-    var phone = document.getElementById("phone").value;
-    var time = document.getElementById("time").value;
-    var checkedItems = document.querySelectorAll(".item.checked .item-text");
-    var foods = Array.from(checkedItems).map(el => el.innerText).join(", ");
-    var methord = document.getElementById("methord").value;
-    var grade = document.getElementById("grade").value;
-    var totalCash = document.getElementById("total-cash").innerText;
-    var subBtn = document.getElementById("sub");
-    var photoInput = document.getElementById("userPhoto");
-     var email = document.getElementById("email").value;
-
-    // LocalStorage එකෙන් කලින් Save කරපු Photo URL එකක් තියෙනවාදැයි බැලීම
-    let savedPhotoUrl = localStorage.getItem("canteen_user_photo");
-
-    if (!name || !phone || checkedItems.length === 0 || !grade) {
-        alert("කරුණාකර සියලු විස්තර, Grade/Place සහ ආහාර තෝරන්න!");
-        return;
-    }
-
-    // Photo එකක් නැත්නම් පහත පණිවිඩය පෙන්වයි
-    if (!savedPhotoUrl && photoInput.files.length === 0) {
-        alert("කරුණාකර ඔබගේ ඡායාරූපයක් (Photo) ඇතුළත් කරන්න!");
-        return;
-    }
-
-    subBtn.disabled = true;
-    subBtn.value = "Processing...";
-
-    try {
-        // 1. Photo එකක් Upload වෙනවා නම් Supabase Storage එකට Upload කිරීම
-        if (photoInput.files.length > 0) {
-            const file = photoInput.files[0];
-            const fileExt = file.name.split('.').pop();
-            const fileName = `${phone}_${Date.now()}.${fileExt}`;
-
-            const { data: uploadData, error: uploadError } = await _supabase.storage
-                .from('user-profiles') // Supabase Storage Bucket එකේ නම
-                .upload(fileName, file);
-
-            if (uploadError) {
-                alert("Photo Upload කිරීමට නොහැකි විය: " + uploadError.message);
-                subBtn.disabled = false;
-                subBtn.value = "Submit Order";
-                return;
-            }
-
-            // Public URL එක ලබා ගැනීම
-            const { data: urlData } = _supabase.storage
-                .from('user-profiles')
-                .getPublicUrl(fileName);
-
-            savedPhotoUrl = urlData.publicUrl;
-            localStorage.setItem("canteen_user_photo", savedPhotoUrl);
-        }
-
-        // 2. Database එකට Order එක සේව් කිරීම (WhatsApp එකට යන්නේ නැත)
-        const { data, error } = await _supabase
-            .from('canteen_orders')
-            .insert([{
-                name: name,
-                phone: phone,
-                time: time,
-                methord: methord,
-                grade: grade,
-                foods: foods,
-                totalCash: totalCash,
-                photo_url: savedPhotoUrl,
-                status: 'Pending'
-            }])
-            .select();
-
-        if (error) {
-            alert("Order එක යැවීමට නොහැකි විය: " + error.message);
-            subBtn.disabled = false;
-            subBtn.value = "Submit Order";
-            return;
-        }
-
-        // සාර්ථකව සේව් වූ පසු පණිවිඩය පෙන්වා Form එක reset කිරීම
-        alert("ඔබගේ Order එක සාර්ථකව Canteen එක වෙත යවන ලදී!");
-        
-        // Form එක clear කිරීමට අවශ්‍ය නම්:
-        document.getElementById("name").value = "";
-        document.getElementById("phone").value = "";
-
-    } catch (err) {
-        console.error("Submission Error:", err);
-        alert("යම් දෝෂයක් සිදු විය, නැවත උත්සාහ කරන්න.");
-    } finally {
-        subBtn.disabled = false;
-        subBtn.value = "Submit Order";
-    }
-}
+                alert("Your order has been placed successfully!");
+                location.reload();
 
             } catch (err) {
                 console.error("Submission Error:", err);
-                alert("යම් දෝෂයක් සිදු විය, නැවත උත්සාහ කරන්න.");
+                alert("An error occurred, please try again.");
             } finally {
                 subBtn.disabled = false;
                 subBtn.value = "Submit Order";
@@ -874,5 +401,4 @@ select:focus-visible, .item:focus-visible {
         }
     </script>
 </body>
-
 </html>
