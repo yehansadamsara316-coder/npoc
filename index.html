@@ -17,7 +17,6 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="POC Canteen">
 <link rel="apple-touch-icon" href="prince_online_canteen_youtube_logo.png">
-</head>
 <style>
 :root {
   --turmeric: #e3a021;
@@ -47,9 +46,10 @@ body {
   background: var(--cream);
   color: var(--ink);
   line-height: 1.5;
+  overflow-x: hidden;
 }
 
-img { max-width: 100%; display: block; }
+img, video { max-width: 100%; height: auto; display: block; }
 a { color: inherit; text-decoration: none; }
 
 h1, h2, h3 {
@@ -65,6 +65,7 @@ h1, h2, h3 {
   width: 100%;
 }
 
+/* Header & Nav */
 .site-nav {
   position: sticky;
   top: 0;
@@ -86,7 +87,7 @@ h1, h2, h3 {
   align-items: center;
   gap: 12px;
   font-family: var(--font-display);
-  font-size: clamp(1.05rem, 2.4vw, 1.4rem);
+  font-size: clamp(1rem, 2.4vw, 1.4rem);
   color: var(--paper);
   white-space: nowrap;
 }
@@ -128,8 +129,10 @@ h1, h2, h3 {
   color: var(--paper);
   font-size: 1.6rem;
   cursor: pointer;
+  padding: 8px;
 }
 
+/* Mobile Responsive Nav */
 @media (max-width: 770px) {
   .nav-toggle { display: block; }
   .nav-links {
@@ -142,32 +145,29 @@ h1, h2, h3 {
     align-items: stretch;
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.3s ease;
+    transition: max-height 0.3s ease-in-out;
+    box-shadow: 0 10px 15px rgba(0,0,0,0.2);
   }
-  .nav-links.open { max-height: 320px; }
+  .nav-links.open { max-height: 350px; }
   .nav-links a {
     border-radius: 0;
-    padding: 16px;
+    padding: 16px 24px;
     border-top: 1px solid rgba(255,255,255,0.08);
   }
 }
 
+/* Hero Section */
 .hero {
   background: var(--leaf);
   color: var(--paper);
-  padding: clamp(48px, 8vw, 96px) 0;
+  padding: clamp(36px, 8vw, 96px) 0;
 }
 
 .hero .wrap {
   display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: 30px;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
   align-items: center;
-}
-
-@media (max-width: 860px) {
-  .hero .wrap { grid-template-columns: 1fr; text-align: center; }
-  .hero-art { margin: 0 auto; max-width: 260px; }
 }
 
 .eyebrow {
@@ -182,13 +182,14 @@ h1, h2, h3 {
   color: var(--turmeric);
 }
 
-.hero h1 { font-size: clamp(2rem, 5.2vw, 3.4rem); margin-bottom: 16px; }
+.hero h1 { font-size: clamp(2rem, 5vw, 3.4rem); margin-bottom: 16px; }
 .hero h1 span { color: var(--turmeric); }
-.hero p { font-size: 1.1rem; opacity: 0.9; margin-bottom: 28px; }
+.hero p { font-size: clamp(0.98rem, 2vw, 1.1rem); opacity: 0.9; margin-bottom: 28px; }
 
 .btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   padding: 14px 28px;
   border-radius: 999px;
@@ -196,6 +197,7 @@ h1, h2, h3 {
   font-size: 0.98rem;
   border: none;
   cursor: pointer;
+  text-align: center;
 }
 
 .btn-primary { background: var(--turmeric); color: var(--ink); }
@@ -203,17 +205,29 @@ h1, h2, h3 {
 .hero-art {
   border-radius: var(--radius);
   box-shadow: 0 20px 50px rgba(0,0,0,0.35);
-  border: 6px solid var(--paper);
-  width: 500px;
-  margin-left: 100px;
+  border: 4px solid var(--paper);
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
 }
 
-.section { padding: clamp(48px, 8vw, 88px) 0; }
+@media (max-width: 860px) {
+  .hero .wrap { 
+    grid-template-columns: 1fr; 
+    text-align: center; 
+  }
+  .hero-art { 
+    margin-top: 10px; 
+  }
+}
+
+/* Main Section & Menu Grid */
+.section { padding: clamp(40px, 8vw, 88px) 0; }
 .section-head { text-align: center; max-width: 620px; margin: 0 auto 40px; }
 
 .menu-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 24px;
 }
 
@@ -252,20 +266,22 @@ h1, h2, h3 {
   border-radius: 6px;
 }
 
+/* Footer */
 .site-footer {
   background: var(--ink);
   color: var(--cream);
   padding: 34px 0;
+  text-align: center;
 }
 
 .site-footer .wrap {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 12px;
 }
 </style>
+</head>
 <body>
 
 <nav class="site-nav">
@@ -358,8 +374,8 @@ h1, h2, h3 {
 
     menuContainer.innerHTML = ''; 
 
-    if (foods.length === 0) {
-      menuContainer.innerHTML = '<p style="text-align:center; width:100%;">No available food items found.</p>';
+    if (!foods || foods.length === 0) {
+      menuContainer.innerHTML = '<p style="text-align:center; width:100%; grid-column: 1 / -1;">No available food items found.</p>';
       return;
     }
 
