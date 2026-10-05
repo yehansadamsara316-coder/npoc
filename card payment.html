@@ -3,10 +3,19 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Payment Checkout Form</title>
-  <link rel="icon" href="img/prince_online_canteen_youtube_logo.png">
+  <link rel="icon" href="prince_online_canteen_youtube_logo.png">
     <link rel="icon" href="prince_online_canteen_youtube_logo.png">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css">
 	<link rel="stylesheet" href="styles.css">
+  <!-- PayHere SDK Example -->
+<script type="text/javascript" src="https://www.payhere.lk/lib/payhere.js"></script>
+<!-- PWA Web App Manifest -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#2f5233">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="POC Canteen">
+<link rel="apple-touch-icon" href="prince_online_canteen_youtube_logo.png">
 
 </head>
 <style>
@@ -181,9 +190,12 @@ body{
         </div>
       </div>
         
-      <a class="" id="io" href="oder.html">
-        Pay
-      </a> 
+    <!-- Example Frontend Form Integration -->
+<form id="payment-form">
+  <input type="text" id="card-holder" placeholder="Cardholder Name" required>
+  <div id="card-element"><!-- Stripe/PayHere Card Element Meta --></div>
+  <button type="submit" id="pay-btn">Pay Now</button>
+</form>
       
     </div>
   </div>
@@ -191,6 +203,52 @@ body{
 
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
+  <script>
+    // PayHere Example Trigger
+payhere.onCompletion = function onCompletion(orderId) {
+    console.log("Payment completed. OrderID:" + orderId);
+    // Supabase එකට order status එක 'Paid' ලෙස update කරන්න
+};
+
+payhere.onDismissed = function onDismissed() {
+    console.log("Payment dismissed");
+};
+
+payhere.onError = function onError(error) {
+    console.log("Error:" + error);
+};
+
+function startPayment() {
+    var payment = {
+        "sandbox": true, // සැබෑ භාවිතයේදී (Live) false කරන්න
+        "merchant_id": "YOUR_MERCHANT_ID",
+        "return_url": "https://npoc.web.lk/order-success",
+        "cancel_url": "https://npoc.web.lk/order-cancel",
+        "notify_url": "https://your-backend-api.com/payhere-notify",
+        "order_id": "ItemNo12345",
+        "items": "Canteen Food Order",
+        "amount": "500.00",
+        "currency": "LKR",
+        "first_name": "Saman",
+        "last_name": "Perera",
+        "email": "samanp@gmail.com",
+        "phone": "0771234567",
+        "address": "Prince College",
+        "city": "Colombo",
+        "country": "Sri Lanka"
+    };
+    payhere.startPayment(payment);
+}
+  </script>
+  <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then((reg) => console.log('Service Worker Registered Successfully:', reg.scope))
+        .catch((err) => console.log('Service Worker Registration Failed:', err));
+    });
+  }
+</script>
 
 </body>
 </html>

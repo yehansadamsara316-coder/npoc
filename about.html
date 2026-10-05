@@ -4,11 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>About — Prince Online Canteen</title>
-<link rel="icon" href="prince_online_canteen_youtube_logo.png">
+<link rel="icon" href="/IMG/prince_online_canteen_youtube_logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="css/style.css">
+<!-- PWA Web App Manifest -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#2f5233">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="POC Canteen">
+<link rel="apple-touch-icon" href="prince_online_canteen_youtube_logo.png">
 </head>
 <style>
     /* =========================================================
@@ -590,7 +597,7 @@ select:focus-visible, .item:focus-visible {
       <span class="eyebrow" style="background:var(--cream-2);color:var(--chili);">About NPOC</span>
       <h1 style="margin-top:10px;">About</h1>
       <p class="sub">about poc {PRINCE ONLINE CANTEEN} play video and about NPOC.web.lk*</p>
-      <video controls muted loop  title="NPOC.WEB.LK" src="Screen Recording 2026-08-24 at 12.59.52.mp4" class="hero-art" style="width: 500px;"></video>
+      <video controls muted loop  title="NPOC.WEB.LK" src="Recording 2026-08-24 at 12.59.52.mp4" class="hero-art" style="width: 500px;"></video>
     
 </main>
 
@@ -605,5 +612,14 @@ select:focus-visible, .item:focus-visible {
 
 
 <script src="js/script.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then((reg) => console.log('Service Worker Registered Successfully:', reg.scope))
+        .catch((err) => console.log('Service Worker Registration Failed:', err));
+    });
+  }
+</script>
 </body>
 </html>

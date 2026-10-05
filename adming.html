@@ -16,6 +16,13 @@
           emailjs.init("7uid9iRfJ5yZKmZm_");
        })();
     </script>
+    <!-- PWA Web App Manifest -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#2f5233">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="POC Canteen">
+<link rel="apple-touch-icon" href="prince_online_canteen_youtube_logo.png">
     
     <style>
         :root {
@@ -83,6 +90,9 @@
             <div>
                 <button class="btn btn-light btn-sm mr-2" onclick="fetchOrders()"><i class="fas fa-sync-alt"></i> Refresh Data</button>
                 <button class="btn btn-clear btn-sm" onclick="clearAllOrders()"><i class="fas fa-trash"></i> Clear All Orders</button>
+                <a href="index.html">
+                    <button class="btn btn-btn-ghost">HOME</button>
+                </a>
             </div>
         </div>
 
@@ -296,5 +306,14 @@
 
         fetchOrders();
     </script>
+    <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then((reg) => console.log('Service Worker Registered Successfully:', reg.scope))
+        .catch((err) => console.log('Service Worker Registration Failed:', err));
+    });
+  }
+</script>
 </body>
 </html>

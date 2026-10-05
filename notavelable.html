@@ -4,9 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Portal — Prince Online Canteen</title>
-    <link rel="icon" href="prince_online_canteen_youtube_logo.png">
+    <link rel="icon" href="/img/prince_online_canteen_youtube_logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- PWA Web App Manifest -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#2f5233">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="POC Canteen">
+<link rel="apple-touch-icon" href="prince_online_canteen_youtube_logo.png">
     <style>
         :root {
           --turmeric: #e3a021;
@@ -106,6 +113,15 @@
         window.location.href = 'account.html';
     });
 
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then((reg) => console.log('Service Worker Registered Successfully:', reg.scope))
+        .catch((err) => console.log('Service Worker Registration Failed:', err));
+    });
+  }
 </script>
 
 </body>
