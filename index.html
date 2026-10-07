@@ -326,6 +326,18 @@ h1, h2, h3 {
   border-radius: 6px;
 }
 
+.quantity-badge {
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--leaf-dark);
+  background: #e2f0d9;
+  border: 1px solid var(--leaf-light);
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
 /* Footer */
 .site-footer {
   background: var(--ink);
@@ -458,11 +470,15 @@ h1, h2, h3 {
     }
 
     foods.forEach(item => {
+      const stockQty = item.quantity !== undefined && item.quantity !== null ? item.quantity : 0;
       const cardHTML = `
         <article class="food-card">
           <img class="thumb" src="${item.image_url || 'https://placehold.co/300x200/f2e6cb/26221b?text=Food'}" alt="${item.name}" onerror="this.src='https://placehold.co/300x200/f2e6cb/26221b?text=Food'">
           <div class="body">
-            <span class="price-tag">Rs. ${item.price}</span>
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+              <span class="price-tag">Rs. ${item.price}</span>
+              <span class="quantity-badge"><i class="fa-solid fa-boxes-stacked"></i> Stock: ${stockQty}</span>
+            </div>
             <h3>${item.name}</h3>
             <p class="desc">${item.description || ''}</p>
             <a href="METHORDE.html" class="btn btn-primary">Order now</a>

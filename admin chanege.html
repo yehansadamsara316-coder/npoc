@@ -148,6 +148,7 @@
           <tr class="bg-cream/60 border-b border-cream-2 text-xs font-mono font-bold uppercase tracking-wider text-leaf-dark">
             <th class="py-4 px-6">Item</th>
             <th class="py-4 px-4">Price (LKR)</th>
+            <th class="py-4 px-4">Quantity</th>
             <th class="py-4 px-4">Status</th>
             <th class="py-4 px-6 text-right">Actions</th>
           </tr>
@@ -179,9 +180,15 @@
         <input type="text" id="item-title" required class="w-full px-4 py-3 bg-cream/40 border border-cream-2 rounded-xl text-sm font-semibold">
       </div>
 
-      <div>
-        <label class="block text-xs font-mono font-bold uppercase text-leaf-dark mb-1">Price (LKR) *</label>
-        <input type="number" id="item-price" min="0" step="5" required class="w-full px-4 py-3 bg-cream/40 border border-cream-2 rounded-xl text-sm font-semibold">
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-mono font-bold uppercase text-leaf-dark mb-1">Price (LKR) *</label>
+          <input type="number" id="item-price" min="0" step="5" required class="w-full px-4 py-3 bg-cream/40 border border-cream-2 rounded-xl text-sm font-semibold">
+        </div>
+        <div>
+          <label class="block text-xs font-mono font-bold uppercase text-leaf-dark mb-1">Quantity (Stock) *</label>
+          <input type="number" id="item-quantity" min="0" required class="w-full px-4 py-3 bg-cream/40 border border-cream-2 rounded-xl text-sm font-semibold" placeholder="0">
+        </div>
       </div>
 
       <div>
@@ -241,6 +248,7 @@
         id: item.id,
         title: item.name,
         price: item.price,
+        quantity: item.quantity || 0,
         desc: item.description,
         image: item.image_url,
         available: item.is_available
@@ -284,6 +292,7 @@
             </div>
           </td>
           <td class="py-3 px-4 font-mono font-bold">Rs. ${item.price}</td>
+          <td class="py-3 px-4 font-mono font-bold">${item.quantity}</td>
           <td class="py-3 px-4">
             <button onclick="toggleStatus(${item.id}, ${!item.available})" class="px-3 py-1 rounded-full text-xs font-bold ${
               item.available ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
@@ -341,6 +350,7 @@
     const id = document.getElementById("item-id").value;
     const name = document.getElementById("item-title").value.trim();
     const price = parseFloat(document.getElementById("item-price").value);
+    const quantity = parseInt(document.getElementById("item-quantity").value) || 0;
     const image_url = document.getElementById("item-image").value.trim();
     const description = document.getElementById("item-desc").value.trim();
     const is_available = document.getElementById("item-status").value === "AVAILABLE";
@@ -348,7 +358,7 @@
     if (id) {
       const { error } = await _supabase
         .from('foods')
-        .update({ name, price, image_url, description, is_available })
+        .update({ name, price, quantity, image_url, description, is_available })
         .eq('id', id);
 
       if (error) showToast("Error", error.message, "error");
@@ -356,7 +366,7 @@
     } else {
       const { error } = await _supabase
         .from('foods')
-        .insert([{ name, price, image_url, description, is_available }]);
+        .insert([{ name, price, quantity, image_url, description, is_available }]);
 
       if (error) showToast("Error", error.message, "error");
       else showToast("Created", "Food item added successfully!");
@@ -369,6 +379,7 @@
   function openAddModal() {
     document.getElementById("food-form").reset();
     document.getElementById("item-id").value = "";
+    document.getElementById("item-quantity").value = "";
     document.getElementById("modal-title").innerText = "Add Food Item";
     document.getElementById("food-modal").classList.remove("hidden");
   }
@@ -380,6 +391,7 @@
     document.getElementById("item-id").value = item.id;
     document.getElementById("item-title").value = item.title;
     document.getElementById("item-price").value = item.price;
+    document.getElementById("item-quantity").value = item.quantity || 0;
     document.getElementById("item-image").value = item.image || "";
     document.getElementById("item-desc").value = item.desc || "";
     document.getElementById("item-status").value = item.available ? "AVAILABLE" : "OUT_OF_STOCK";
