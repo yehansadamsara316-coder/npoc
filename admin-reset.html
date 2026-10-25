@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Lock Reset</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #faf3e3; }
+        .card { background: white; padding: 30px; border-radius: 12px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        button { background: #2f5233; color: white; border: none; padding: 12px 24px; font-size: 16px; border-radius: 8px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Admin Access Reset</h2>
+        <p>Click below to unlock admin portal access.</p>
+        <button onclick="resetLock()">Unlock Admin Portal</button>
+    </div>
+
+    <script>
+        function resetLock() {
+            localStorage.setItem('adminAttempts', '0');
+            alert('Admin Portal has been Unlocked Successfully!');
+            window.location.href = 'admin-dashboard.html'; // Admin Portal Page එකේ නම
+        }
+    </script>
+</body>
+</html>
