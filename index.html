@@ -114,11 +114,11 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.
     flex-direction: column; align-items: stretch; max-height: 0; overflow: hidden;
     transition: max-height 0.3s ease-in-out; box-shadow: 0 10px 15px rgba(0,0,0,0.2);
   }
-  .nav-links.open { max-height: 350px; }
+  .nav-links.open { max-height: 380px; }
   .nav-links a, .nav-links button { border-radius: 0; padding: 16px 24px; border-top: 1px solid rgba(255,255,255,0.08); text-align: left; width: 100%; }
 }
 
-/* Hero Section with Burger Background Image */
+/* Hero Section */
 .hero {
   background: linear-gradient(rgba(32, 56, 35, 0.88), rgba(32, 56, 35, 0.88)), url('watermarked_img_2227021059012569311.jpg');
   background-size: cover;
@@ -148,9 +148,21 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.
   .hero-art { margin-top: 10px; }
 }
 
-/* Menu Grid */
+/* Menu Grid & Search Bar */
 .section { padding: clamp(40px, 8vw, 88px) 0; }
-.section-head { text-align: center; max-width: 620px; margin: 0 auto 40px; }
+.section-head { text-align: center; max-width: 620px; margin: 0 auto 30px; }
+
+.food-search-box {
+  max-width: 500px; margin: 0 auto 40px; position: relative; display: flex; align-items: center;
+}
+.food-search-box input {
+  width: 100%; padding: 14px 20px 14px 45px; border-radius: 999px; border: 2px solid var(--cream-2);
+  background: var(--paper); font-size: 1rem; color: var(--ink); outline: none; box-shadow: var(--shadow-soft);
+  transition: all 0.3s ease;
+}
+.food-search-box input:focus { border-color: var(--turmeric); box-shadow: 0 4px 12px rgba(227, 160, 33, 0.2); }
+.food-search-box i { position: absolute; left: 18px; color: #888; font-size: 1.1rem; }
+
 .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; }
 .food-card { background: var(--paper); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-card); display: flex; flex-direction: column; }
 .food-card .thumb { aspect-ratio: 4/3; width: 100%; object-fit: cover; background: var(--cream-2); }
@@ -164,7 +176,7 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.
   color: var(--leaf-dark); background: #e2f0d9; border: 1px solid var(--leaf-light); padding: 3px 8px; border-radius: 6px;
 }
 
-/* CART DRAWER */
+/* CART & MY ACCOUNT DRAWER */
 .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 998; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
 .cart-overlay.active { opacity: 1; visibility: visible; }
 .cart-drawer {
@@ -176,6 +188,15 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.
 .cart-header { background: var(--leaf); color: var(--paper); padding: 20px; display: flex; justify-content: space-between; align-items: center; }
 .close-cart { background: none; border: none; color: white; font-size: 1.4rem; cursor: pointer; }
 .cart-body { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
+
+/* My Account Orders List Styles */
+.user-order-card {
+  background: white; border: 1px solid var(--cream-2); border-radius: 12px; padding: 14px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 6px;
+}
+.status-badge-pending { background: #ffeeba; color: #856404; font-weight: bold; padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; display: inline-block; }
+.status-badge-completed { background: #d4edda; color: #155724; font-weight: bold; padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; display: inline-block; }
+
 .cart-item { display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--cream-2); padding-bottom: 12px; }
 .cart-item img { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; }
 .cart-item-info { flex: 1; }
@@ -188,7 +209,6 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.
 .cart-footer { padding: 20px; border-top: 2px solid var(--cream-2); background: var(--cream); }
 .cart-total-row { display: flex; justify-content: space-between; font-weight: 700; font-size: 1.2rem; margin-bottom: 16px; }
 
-/* Checkout Input fields */
 .checkout-fields { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
 .checkout-fields input, .checkout-fields select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #dcd3ba; background: white; font-size: 0.9rem; }
 
@@ -265,7 +285,7 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.
 <div class="cart-drawer" id="cartDrawer">
   <div class="cart-header">
     <h3><i class="fa-solid fa-cart-shopping"></i> Complete Your Order</h3>
-    <button class="close-cart" id="closeCartBtn">&times;</button>
+    <button class="close-cart" onclick="closeAllDrawers()">&times;</button>
   </div>
   <div class="cart-body" id="cartItemsContainer"></div>
   <div class="cart-footer">
@@ -295,6 +315,23 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.
   </div>
 </div>
 
+<!-- MY ACCOUNT DRAWER -->
+<div class="cart-drawer" id="accountDrawer">
+  <div class="cart-header">
+    <h3><i class="fa-solid fa-user-clock"></i> My Orders & Status</h3>
+    <button class="close-cart" onclick="closeAllDrawers()">&times;</button>
+  </div>
+  <div class="cart-body">
+    <div style="display: flex; gap: 8px;">
+      <input type="number" id="searchUserPhone" placeholder="Enter Phone Number..." style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #dcd3ba;">
+      <button class="btn btn-primary" onclick="loadUserOrders()"><i class="fa-solid fa-search"></i> Check</button>
+    </div>
+    <div id="userOrdersContainer" style="margin-top: 10px; display: flex; flex-direction: column; gap: 12px;">
+      <p style="text-align: center; color: #777; margin-top: 20px;">Enter your phone number above to see your order history & status from Supabase.</p>
+    </div>
+  </div>
+</div>
+
 <nav class="site-nav">
   <div class="wrap">
     <a href="index.html" class="brand">
@@ -305,6 +342,9 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.
     <div class="nav-links">
       <a href="index.html">HOME</a>
       <a href="about.html">ABOUT</a>
+      <button id="openAccountBtn" style="font-weight: 600; font-size: 0.95rem; color: white; background: none; border: none; cursor: pointer; padding: 10px 18px;">
+        <i class="fa-solid fa-user-clock"></i> MY ACCOUNT
+      </button>
       <button class="cta" id="openCartBtn">
         <i class="fa-solid fa-cart-shopping"></i> CART
         <span class="cart-badge" id="cartCount">0</span>
@@ -318,7 +358,7 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.
     <div class="hero-copy">
       <span class="eyebrow">School canteen · online ordering</span>
       <h1>Skip the queue.<br><span>Order your lunch</span> from your desk.</h1>
-      <p>Browse today's items from Supabase, add them to your cart, and place your order directly!</p>
+      <p>Browse today's items from Supabase, add them to your cart, and check your order status instantly!</p>
     </div>
     <video src="NPOC-WEB-LK-launch.mp4" class="hero-art" autoplay muted loop playsinline></video>
   </div>
@@ -331,6 +371,13 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.
       <h2>What's cooking</h2>
       <p>Prices in LKR. Tap "Add to Cart" to build your order.</p>
     </div>
+    
+    <!-- Food Search Bar -->
+    <div class="food-search-box">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" id="foodSearchInput" placeholder="Search for food items (e.g., Biryani, Rice)..." onkeyup="filterFoods()">
+    </div>
+
     <div class="menu-grid" id="menu-container"></div>
   </div>
 </section>
@@ -384,7 +431,12 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.
     }
   }
 
-  // Intro Typing & Loading Handler
+  function closeAllDrawers() {
+    document.getElementById('cartDrawer').classList.remove('active');
+    document.getElementById('accountDrawer').classList.remove('active');
+    document.getElementById('cartOverlay').classList.remove('active');
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     const textToType = "npoc.web.lk";
     const typedTextSpan = document.getElementById("typed-text");
@@ -411,22 +463,28 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.
     }
 
     const openCartBtn = document.getElementById('openCartBtn');
-    const closeCartBtn = document.getElementById('closeCartBtn');
+    const openAccountBtn = document.getElementById('openAccountBtn');
     const cartOverlay = document.getElementById('cartOverlay');
-    const cartDrawer = document.getElementById('cartDrawer');
 
     openCartBtn.addEventListener('click', () => {
-      cartDrawer.classList.add('active');
+      closeAllDrawers();
+      document.getElementById('cartDrawer').classList.add('active');
       cartOverlay.classList.add('active');
     });
 
-    closeCartBtn.addEventListener('click', closeCart);
-    cartOverlay.addEventListener('click', closeCart);
+    openAccountBtn.addEventListener('click', () => {
+      closeAllDrawers();
+      document.getElementById('accountDrawer').classList.add('active');
+      cartOverlay.classList.add('active');
+      
+      const savedPhone = localStorage.getItem('user_phone');
+      if (savedPhone) {
+        document.getElementById('searchUserPhone').value = savedPhone;
+        loadUserOrders();
+      }
+    });
 
-    function closeCart() {
-      cartDrawer.classList.remove('active');
-      cartOverlay.classList.remove('active');
-    }
+    cartOverlay.addEventListener('click', closeAllDrawers);
 
     fetchFoodMenu();
     updateCartUI();
@@ -453,16 +511,20 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.
     }
 
     foodsData = foods || [];
+    renderFoodItems(foodsData);
+  }
+
+  function renderFoodItems(items) {
     const menuContainer = document.getElementById('menu-container');
     if (!menuContainer) return;
 
     menuContainer.innerHTML = ''; 
-    if (foodsData.length === 0) {
+    if (items.length === 0) {
       menuContainer.innerHTML = '<p style="text-align:center; width:100%;">No available food items found.</p>';
       return;
     }
     
-    foodsData.forEach(item => {
+    items.forEach(item => {
       const stockQty = item.quantity ?? 0;
       menuContainer.innerHTML += `
         <article class="food-card">
@@ -483,6 +545,16 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.
     });
   }
 
+  // Food Filter Function
+  function filterFoods() {
+    const query = document.getElementById('foodSearchInput').value.toLowerCase().trim();
+    const filtered = foodsData.filter(item => 
+      item.name.toLowerCase().includes(query) || 
+      (item.description && item.description.toLowerCase().includes(query))
+    );
+    renderFoodItems(filtered);
+  }
+
   function addToCart(foodId) {
     const food = foodsData.find(f => f.id === foodId);
     if (!food) return;
@@ -495,6 +567,7 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.
     }
 
     saveAndUpdateCart();
+    closeAllDrawers();
     document.getElementById('cartDrawer').classList.add('active');
     document.getElementById('cartOverlay').classList.add('active');
   }
@@ -552,6 +625,58 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.
     });
   }
 
+  // --- SUPABASE FETCH USER ORDERS ---
+  async function loadUserOrders() {
+    const phoneInput = document.getElementById('searchUserPhone').value.trim();
+    const container = document.getElementById('userOrdersContainer');
+
+    if (!phoneInput) {
+      showPopupModal("Phone Required", "Please enter your phone number to check orders.", "warning");
+      return;
+    }
+
+    localStorage.setItem('user_phone', phoneInput);
+    container.innerHTML = '<p style="text-align:center; color:#666;">Loading your orders from database...</p>';
+
+    const { data: orders, error } = await _supabase
+      .from('canteen_orders')
+      .select('*')
+      .eq('phone', phoneInput)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      container.innerHTML = '<p style="text-align:center; color:#c8401f;">Error fetching your orders.</p>';
+      return;
+    }
+
+    if (!orders || orders.length === 0) {
+      container.innerHTML = `<p style="text-align:center; color:#777; margin-top:20px;">No orders found in database for Phone: ${phoneInput}</p>`;
+      return;
+    }
+
+    container.innerHTML = '';
+    orders.forEach(ord => {
+      const isCompleted = ord.status === 'Completed';
+      const statusHtml = isCompleted
+        ? `<span class="status-badge-completed"><i class="fa-solid fa-circle-check"></i> Completed</span>`
+        : `<span class="status-badge-pending"><i class="fa-solid fa-clock"></i> Pending</span>`;
+
+      container.innerHTML += `
+        <div class="user-order-card">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="font-size:0.95rem;">Order ID: #${ord.id}</strong>
+            ${statusHtml}
+          </div>
+          <div style="font-size:0.88rem; color:#444;"><strong>Foods:</strong> ${ord.foods}</div>
+          <div style="font-size:0.85rem; color:#666; display:flex; justify-content:space-between;">
+            <span>Time: ${ord.time || 'N/A'}</span>
+            <span style="font-weight:bold; color:#2f5233;">${ord.totalCash}</span>
+          </div>
+        </div>
+      `;
+    });
+  }
+
   async function submitOrderToSupabase() {
     if (cart.length === 0) {
       showPopupModal("Cart Empty", "Your cart is empty! Please add items before placing an order.", "warning");
@@ -573,6 +698,8 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.
 
     let selectedFoodsArray = cart.map(item => `${item.name} (x${item.qty})`);
     var foods = selectedFoodsArray.join(", ");
+
+    localStorage.setItem('user_phone', phone);
 
     subBtn.disabled = true;
     subBtn.innerText = "Sending Order...";
@@ -600,10 +727,14 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.
         return;
       }
 
-      showPopupModal("Order Successful!", "Your order has been placed successfully to the canteen!", "success", () => {
+      showPopupModal("Order Successful!", "Your order has been saved to the database!", "success", () => {
         cart = [];
         saveAndUpdateCart();
-        location.reload();
+        closeAllDrawers();
+        document.getElementById('accountDrawer').classList.add('active');
+        document.getElementById('cartOverlay').classList.add('active');
+        document.getElementById('searchUserPhone').value = phone;
+        loadUserOrders();
       });
 
     } catch (err) {
