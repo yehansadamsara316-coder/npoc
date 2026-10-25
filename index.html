@@ -177,6 +177,36 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.
 .checkout-fields { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
 .checkout-fields input, .checkout-fields select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #dcd3ba; background: white; font-size: 0.9rem; }
 
+/* CUSTOM POPUP MODAL STYLES */
+.custom-modal-overlay {
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px);
+  z-index: 10000; display: flex; align-items: center; justify-content: center;
+  opacity: 0; visibility: hidden; transition: all 0.3s ease;
+}
+.custom-modal-overlay.active { opacity: 1; visibility: visible; }
+.custom-modal {
+  background: var(--paper); border-radius: 20px; width: 90%; max-width: 380px;
+  padding: 24px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  transform: scale(0.8); transition: transform 0.3s ease; position: relative;
+}
+.custom-modal-overlay.active .custom-modal { transform: scale(1); }
+.modal-icon-box {
+  width: 60px; height: 60px; border-radius: 50%; display: flex;
+  align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 1.8rem;
+}
+.modal-icon-success { background: #e2f0d9; color: #2f5233; }
+.modal-icon-error { background: #ffebeb; color: #c8401f; }
+.modal-icon-warning { background: #fff3cd; color: #856404; }
+.custom-modal h3 { font-family: var(--font-display); font-size: 1.4rem; color: var(--leaf-dark); margin-bottom: 8px; }
+.custom-modal p { font-size: 0.95rem; color: #555; margin-bottom: 20px; }
+.modal-btn {
+  width: 100%; padding: 12px; border: none; border-radius: 10px;
+  background: var(--turmeric); color: var(--ink); font-weight: 700;
+  font-size: 1rem; cursor: pointer; transition: background 0.2s;
+}
+.modal-btn:hover { background: var(--turmeric-dark); }
+
 /* Footer */
 .site-footer { background: var(--ink); color: var(--cream); padding: 34px 0; text-align: center; }
 </style>
@@ -189,7 +219,19 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.
   <p class="loader-text">Loading Canteen Menu...</p>
 </div>
 
-<!-- Cart Drawer (Email & Delivery Removed) -->
+<!-- Custom Popup Modal -->
+<div class="custom-modal-overlay" id="customModal">
+  <div class="custom-modal">
+    <div class="modal-icon-box" id="modalIcon">
+      <i class="fa-solid fa-check"></i>
+    </div>
+    <h3 id="modalTitle">Notification</h3>
+    <p id="modalMessage">Message content goes here.</p>
+    <button class="modal-btn" onclick="closePopupModal()">OK</button>
+  </div>
+</div>
+
+<!-- Cart Drawer -->
 <div class="cart-overlay" id="cartOverlay"></div>
 <div class="cart-drawer" id="cartDrawer">
   <div class="cart-header">
@@ -277,6 +319,42 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.
 
   let cart = JSON.parse(localStorage.getItem('poc_cart')) || [];
   let foodsData = [];
+  let onPopupCloseCallback = null;
+
+  // Custom Popup Notification Function
+  function showPopupModal(title, message, type = 'success', callback = null) {
+    const modal = document.getElementById('customModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalMessage = document.getElementById('modalMessage');
+    const modalIcon = document.getElementById('modalIcon');
+
+    modalTitle.innerText = title;
+    modalMessage.innerText = message;
+    onPopupCloseCallback = callback;
+
+    modalIcon.className = 'modal-icon-box';
+    if (type === 'success') {
+      modalIcon.classList.add('modal-icon-success');
+      modalIcon.innerHTML = '<i class="fa-solid fa-check"></i>';
+    } else if (type === 'error') {
+      modalIcon.classList.add('modal-icon-error');
+      modalIcon.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+    } else {
+      modalIcon.classList.add('modal-icon-warning');
+      modalIcon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+    }
+
+    modal.classList.add('active');
+  }
+
+  function closePopupModal() {
+    const modal = document.getElementById('customModal');
+    modal.classList.remove('active');
+    if (onPopupCloseCallback) {
+      onPopupCloseCallback();
+      onPopupCloseCallback = null;
+    }
+  }
 
   window.addEventListener("load", () => {
     setTimeout(() => document.getElementById('loading-screen').classList.add('hidden'), 500);
@@ -426,7 +504,7 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.
 
   async function submitOrderToSupabase() {
     if (cart.length === 0) {
-      alert("Your cart is empty!");
+      showPopupModal("Cart Empty", "Your cart is empty! Please add items before placing an order.", "warning");
       return;
     }
 
@@ -439,7 +517,7 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.
     var subBtn = document.getElementById("subBtn");
 
     if (!name || !phone || !grade || !time) {
-      alert("Please fill all required fields (Name, Phone, Time, Grade/Place)!");
+      showPopupModal("Missing Fields", "Please fill all required fields (Name, Phone, Time, Grade/Place)!", "warning");
       return;
     }
 
@@ -459,27 +537,28 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.
           methord: methord,
           grade: grade,
           foods: foods,
-          email: '', // Email ain karala thiyena nisa empty value ekak yawi
+          email: '',
           totalCash: totalCash,
-          order_type: 'Pickup', // Delivery ain karala nitharama Pickup widihata set karala thiyenne
+          order_type: 'Pickup',
           status: 'Pending'
         }]);
 
       if (error) {
-        alert("Order submission failed: " + error.message);
+        showPopupModal("Order Failed", "Order submission failed: " + error.message, "error");
         subBtn.disabled = false;
         subBtn.innerText = "Submit Order";
         return;
       }
 
-      alert("Your order has been placed successfully!");
-      cart = [];
-      saveAndUpdateCart();
-      location.reload();
+      showPopupModal("Order Successful!", "Your order has been placed successfully to the canteen!", "success", () => {
+        cart = [];
+        saveAndUpdateCart();
+        location.reload();
+      });
 
     } catch (err) {
       console.error("Submission Error:", err);
-      alert("An error occurred, please try again.");
+      showPopupModal("Error", "An unexpected error occurred, please try again.", "error");
     } finally {
       subBtn.disabled = false;
       subBtn.innerText = "Submit Order";
