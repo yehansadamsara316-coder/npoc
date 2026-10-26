@@ -16,7 +16,49 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="POC Canteen">
+<!-- Clickjacking Protection -->
+<meta http-equiv="Content-Security-Policy" content="frame-ancestors 'none';">
 <link rel="apple-touch-icon" href="prince_online_canteen_youtube_logo.png">
+
+<style id="antiClickjack">
+  body { display: none !important; }
+</style>
+
+<script type="text/javascript">
+  if (self === top) {
+    var antiClickjack = document.getElementById("antiClickjack");
+    if (antiClickjack && antiClickjack.parentNode) {
+      antiClickjack.parentNode.removeChild(antiClickjack);
+    }
+  } else {
+    top.location = self.location;
+  }
+</script>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prince Online Canteen</title>
+
+  <!-- 1. Clickjacking Protection -->
+  <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'none';">
+
+  <!-- 2. MIME Sniffing Protection -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+</head>
+<!-- Referrer Policy for Privacy & Data Protection -->
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<!-- Permissions Policy Protection -->
+<meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=()">
+<!-- SEO Meta Description -->
+  <meta name="description" content="Prince Online Canteen (NPOC) - Skip the queue and order your school lunch online instantly. Browse today's fresh menu, manage your orders, and track status live via Supabase.">
+  <meta name="keywords" content="Prince Online Canteen, school canteen, online food ordering, Sri Lanka school canteen, NPOC, Supabase canteen portal">
+  <meta name="author" content="Yehansa Damsara">
+
+  <!-- Open Graph / Social Media Share Meta Tags (WhatsApp, Facebook, etc.) -->
+  <meta property="og:title" content="Prince Online Canteen — Skip the Queue & Order Online">
+  <meta property="og:description" content="Browse today's canteen menu, place your pickup order instantly, and track your order status live!">
+  <meta property="og:image" content="prince_online_canteen_youtube_logo.png">
+  <meta property="og:type" content="website">
 <style>
 :root {
   --turmeric: #e3a021;
@@ -280,6 +322,8 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.
   </div>
 </div>
 
+
+
 <!-- Cart Drawer -->
 <div class="cart-overlay" id="cartOverlay"></div>
 <div class="cart-drawer" id="cartDrawer">
@@ -383,8 +427,9 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.
 </section>
 
 <footer class="site-footer">
-  <div class="wrap">
+  <div class="wrap" style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
     <p>&copy; 2026 Prince Online Canteen — developed by Yehansa Damsara</p>
+    <p><a href="privacy.html" style="color: var(--turmeric); text-decoration: underline; font-size: 0.9rem;">Privacy Policy</a></p>
   </div>
 </footer>
 
@@ -745,6 +790,17 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.
       subBtn.innerText = "Submit Order";
     }
   }
+  // Secure Cookie එකක් සකස් කිරීම
+function setSecureCookie(name, value, days) {
+  let expires = "";
+  if (days) {
+    let date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    expires = "; expires=" + date.toUTCString();
+  }
+  // Secure සහ SameSite එකතු කර ඇත
+  document.cookie = name + "=" + (value || "") + expires + "; path=/; Secure; SameSite=Strict";
+}
 </script>
 </body>
 </html>
